@@ -33,3 +33,19 @@ input[type="file"] {
 .App .navbar-brand {
   font-weight: bold;
 }
+
+.logo {
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  color: rgb(85, 85, 85);
+}
+.logo:hover {
+  text-decoration: none;
+  color: rgb(85, 85, 85);
+}
+
+.nav {
+  background-color: rgb(228, 228, 222);
+  border-radius: 5px;
+  border: 1px solid rgb(92, 91, 85);
+}
