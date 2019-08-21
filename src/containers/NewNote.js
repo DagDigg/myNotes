@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import { API } from "aws-amplify";
 import config from "../config";
 
 export default class NewNote extends Component {
@@ -26,7 +27,7 @@ export default class NewNote extends Component {
   };
 
   handleFileChange = e => {
-    this.file = e.target.file[0];
+    this.file = e.target.files[0];
   };
 
   handleSubmit = async e => {
@@ -40,14 +41,28 @@ export default class NewNote extends Component {
       return;
     }
 
-    this.setState({ isLoading: true });
+    try {
+      await this.createNote({
+        content: this.state.content
+      });
+      this.props.history.push("/");
+    } catch (e) {
+      console.log(e);
+      this.setState({ isLoading: false });
+    }
   };
+
+  createNote(note) {
+    return API.post("notes", "/notes", {
+      body: note
+    });
+  }
 
   render() {
     return (
       <div className="NewNote">
         <form onSubmit={this.handleSubmit}>
-          <FormGroup controllId="content">
+          <FormGroup controlId="content">
             <FormControl
               autoFocus
               type="textarea"
