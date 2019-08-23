@@ -35,7 +35,6 @@ export default class Login extends Component {
       alert(e);
       this.setState({ isLoading: false });
     }
-    this.props.history.push("/");
   };
 
   render() {
