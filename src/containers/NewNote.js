@@ -33,7 +33,7 @@ export default class NewNote extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-
+    this.setState({ isLoading: true });
     if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
       alert(
         `Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE /
@@ -50,7 +50,7 @@ export default class NewNote extends Component {
       });
       this.props.history.push("/");
     } catch (e) {
-      console.log(e);
+      alert(e);
       this.setState({ isLoading: false });
     }
   };
@@ -68,6 +68,7 @@ export default class NewNote extends Component {
           <FormGroup controlId="content">
             <FormControl
               autoFocus
+              autoComplete="off"
               type="textarea"
               value={this.state.content}
               onChange={this.handleChange}
@@ -81,8 +82,9 @@ export default class NewNote extends Component {
             block
             type="submit"
             text="Create note"
-            isLoading={!this.validateForm}
+            disabled={!this.validateForm}
             loadingText="Creating note..."
+            isLoading={this.state.isLoading}
           />
         </form>
       </div>

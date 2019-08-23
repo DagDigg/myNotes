@@ -26,7 +26,6 @@ export default class Home extends Component {
       alert(e);
     }
     this.setState({ isLoading: false });
-    console.log(this.state.notes);
   }
 
   getNotes() {
