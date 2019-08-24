@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { FormText, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import {
+  FormText,
+  FormGroup,
+  FormControl,
+  FormLabel,
+  Alert
+} from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./SignUp.css";
 import { Auth } from "aws-amplify";
@@ -8,15 +14,42 @@ export default class SignUp extends Component {
   constructor(props) {
     super(props);
 
+    this.timeout = null;
+
     this.state = {
       isLoading: false,
       email: "",
       password: "",
+      isValidPassword: true,
+      isValidConfirmPassword: true,
       confirmPassword: "",
       confirmationCode: "",
       newUser: null
     };
   }
+
+  validatePassword = id => {
+    const regex = new RegExp(
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    );
+    let password = this.state.password;
+    let confirmPassword = this.state.confirmPassword;
+
+    window.clearTimeout(this.timeout);
+    this.setState({ isValidPassword: true, isValidConfirmPassword: true });
+
+    id === "password"
+      ? (this.timeout = window.setTimeout(() => {
+          if (!password.match(regex) && password) {
+            this.setState({ isValidPassword: false });
+          }
+        }, 1500))
+      : (this.timeout = window.setTimeout(() => {
+          if (password !== confirmPassword) {
+            this.setState({ isValidConfirmPassword: false });
+          }
+        }, 1500));
+  };
 
   validateForm() {
     return (
@@ -34,6 +67,17 @@ export default class SignUp extends Component {
     this.setState({
       [e.target.id]: e.target.value
     });
+  };
+
+  handlePasswordChange = e => {
+    e.preventDefault();
+    let id = e.target.id;
+    this.setState(
+      {
+        [e.target.id]: e.target.value
+      },
+      () => this.validatePassword(id)
+    );
   };
 
   handleSubmit = async e => {
@@ -118,16 +162,25 @@ export default class SignUp extends Component {
           <FormControl
             type="password"
             value={this.state.password}
-            onChange={this.handleChange}
+            onChange={this.handlePasswordChange}
           />
+          {!this.state.isValidPassword ? (
+            <Alert variant="warning">
+              Password should contain 8 characters, at least one uppercase
+              letter, one lowercase letter, one number and one special character
+            </Alert>
+          ) : null}
         </FormGroup>
         <FormGroup controlId="confirmPassword">
           <FormLabel>Confirm password:</FormLabel>
           <FormControl
             type="password"
             value={this.state.confirmPassword}
-            onChange={this.handleChange}
+            onChange={this.handlePasswordChange}
           />
+          {!this.state.isValidConfirmPassword ? (
+            <Alert variant="warning">Passwords should match</Alert>
+          ) : null}
         </FormGroup>
         <LoaderButton
           block
