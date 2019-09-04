@@ -9,6 +9,7 @@ import NewNote from "./containers/NewNote";
 import Notes from "./containers/Notes";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnAuthenticatedRoute from "./components/UnAuthenticatedRoute";
+import Error from "./components/Error";
 
 export default ({ childProps }) => (
   <Switch>
@@ -37,6 +38,7 @@ export default ({ childProps }) => (
       component={Notes}
       props={childProps}
     />
+    <AppliedRoute path="/err" exact component={Error} props={childProps} />
     {/* Catch unmatched routes */}
     <Route component={NotFound} />
   </Switch>

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { Auth } from "aws-amplify";
+import { Redirect } from "react-router-dom";
 import "./Login.css";
 
 export default class Login extends Component {
@@ -11,7 +12,8 @@ export default class Login extends Component {
     this.state = {
       isLoading: false,
       email: "",
-      password: ""
+      password: "",
+      errDescription: ""
     };
   }
 
@@ -27,48 +29,58 @@ export default class Login extends Component {
 
   handleSubmit = async e => {
     e.preventDefault();
+
     this.setState({ isLoading: true });
     try {
       await Auth.signIn(this.state.email, this.state.password);
       this.props.userHasAuthenticated(true);
     } catch (e) {
-      alert(e);
-      this.setState({ isLoading: false });
+      console.log(e);
+      this.setState({ isLoading: false, errDescription: e.message });
     }
   };
 
   render() {
     return (
       <div className="Login">
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email">
-            <FormLabel className="label">Email</FormLabel>
-            <FormControl
-              autoFocus
-              type="email"
-              placeholder="Enter email"
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
-          <FormGroup controlId="password">
-            <FormLabel className="label">Password</FormLabel>
-            <FormControl
-              type="password"
-              placeholder="Enter password"
-              value={this.state.password}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
-          <LoaderButton
-            block
-            disabled={!this.validateForm()}
-            type="submit"
-            isLoading={this.state.isLoading}
-            text="Login"
-            loadingText="Logging in..."
+        {this.state.errDescription ? (
+          <Redirect
+            to={{
+              pathname: "/err",
+              state: { errDescription: this.state.errDescription }
+            }}
           />
-        </form>
+        ) : (
+          <form onSubmit={this.handleSubmit}>
+            <FormGroup controlId="email">
+              <FormLabel className="label">Email</FormLabel>
+              <FormControl
+                autoFocus
+                type="email"
+                placeholder="Enter email"
+                value={this.state.email}
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+            <FormGroup controlId="password">
+              <FormLabel className="label">Password</FormLabel>
+              <FormControl
+                type="password"
+                placeholder="Enter password"
+                value={this.state.password}
+                onChange={this.handleChange}
+              />
+            </FormGroup>
+            <LoaderButton
+              block
+              disabled={!this.validateForm()}
+              type="submit"
+              isLoading={this.state.isLoading}
+              text="Login"
+              loadingText="Logging in..."
+            />
+          </form>
+        )}
       </div>
     );
   }
