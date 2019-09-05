@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { API } from "aws-amplify";
 import { LinkContainer } from "react-router-bootstrap";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
+import NotesList from "./NotesList";
 
 import "../Home.css";
 
@@ -46,25 +47,7 @@ export default class Home extends Component {
   }
 
   renderNotesList(notes) {
-    return [{}].concat(notes).map((note, idx) =>
-      idx === 0 ? (
-        <LinkContainer key="new" to="/notes/new">
-          <ListGroupItem>
-            <h4>
-              {" "}
-              <b>{"\uFF0B"}</b> Create note
-            </h4>
-          </ListGroupItem>
-        </LinkContainer>
-      ) : (
-        <LinkContainer key={note.noteId} to={`/notes/${note.noteId}`}>
-          <ListGroupItem>
-            <h6>{this.noteHeader(note.content)}</h6>
-            {"Created: " + new Date(note.createdAt).toLocaleString()}{" "}
-          </ListGroupItem>
-        </LinkContainer>
-      )
-    );
+    return <NotesList notes={notes} />;
   }
 
   renderNotes() {
@@ -81,6 +64,14 @@ export default class Home extends Component {
   render() {
     return (
       <div className="Home">
+        <LinkContainer key="new" to="/notes/new">
+          <ListGroupItem>
+            <h4>
+              {" "}
+              <b>{"\uFF0B"}</b> Create note
+            </h4>
+          </ListGroupItem>
+        </LinkContainer>
         {this.props.isAuthenticated ? this.renderNotes() : this.renderLanding()}
       </div>
     );
