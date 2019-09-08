@@ -33,6 +33,12 @@ export default class Home extends Component {
     return API.get("notes", "/notes");
   }
 
+  getIndex() {
+    const lastNote = this.state.notes.slice(-1).pop();
+    const idx = lastNote ? lastNote.noteIndex + 1 : 1;
+    return idx;
+  }
+
   renderLanding() {
     return (
       <div className="lander">
@@ -64,7 +70,14 @@ export default class Home extends Component {
   render() {
     return (
       <div className="Home">
-        <LinkContainer key="new" to="/notes/new">
+        <LinkContainer
+          to={{
+            pathname: "/notes/new",
+            props: {
+              idx: this.getIndex()
+            }
+          }}
+        >
           <ListGroupItem>
             <h4>
               {" "}
