@@ -16,7 +16,8 @@ export default class Notes extends Component {
       isDeleting: false,
       note: null,
       content: "",
-      attachmentURL: null
+      attachmentURL: null,
+      noteIndex: null
     };
   }
 
@@ -25,13 +26,13 @@ export default class Notes extends Component {
       let attachmentURL = null;
       const note = await this.getNote();
 
-      const { content, attachment } = note;
+      const { content, attachment, noteIndex } = note;
 
       if (attachment) {
         attachmentURL = await Storage.vault.get(attachment);
       }
 
-      this.setState({ note, content, attachmentURL });
+      this.setState({ note, content, attachmentURL, noteIndex });
     } catch (e) {
       alert(e);
     }
@@ -95,7 +96,8 @@ export default class Notes extends Component {
 
       await this.saveNote({
         content: this.state.content,
-        attachment: attachment || this.state.note.attachment
+        attachment: attachment || this.state.note.attachment,
+        noteIndex: this.state.noteIndex
       });
 
       this.props.history.push("/");
