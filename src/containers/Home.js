@@ -3,8 +3,41 @@ import { API } from "aws-amplify";
 import { LinkContainer } from "react-router-bootstrap";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import NotesList from "./NotesList";
+import styled from "styled-components";
 
 import "../Home.css";
+
+const CreateNote = styled.div`
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #ffd16b;
+  border: 1px solid #ff9f1c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s;
+  cursor: pointer;
+
+  & > span {
+    font-size: 44px;
+    font-weight: bolder;
+    color: #555555;
+    transition: color 0.3s;
+  }
+  &:hover {
+    background-color: #ff9f1c;
+  }
+  & > span:hover {
+    color: white;
+  }
+`;
+
+const NotesHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 16px;
+`;
 
 export default class Home extends Component {
   constructor(props) {
@@ -42,7 +75,7 @@ export default class Home extends Component {
   renderLanding() {
     return (
       <div className="lander">
-        <h1>myNotes</h1>
+        <h4>myNotes</h4>
         <p>Simple notes taking app.</p>
       </div>
     );
@@ -59,7 +92,23 @@ export default class Home extends Component {
   renderNotes() {
     return (
       <div className="notes">
-        <h1>Notes:</h1>
+        <NotesHeader>
+          <h1 style={{ marginBottom: "0px", lineHeight: "70px" }}>Notes</h1>
+
+          <LinkContainer
+            to={{
+              pathname: "/notes/new",
+              props: {
+                idx: this.getIndex()
+              }
+            }}
+          >
+            <CreateNote>
+              <span>{"\uFF0B"}</span>
+            </CreateNote>
+          </LinkContainer>
+        </NotesHeader>
+
         <ListGroup>
           {!this.state.isLoading && this.renderNotesList(this.state.notes)}
         </ListGroup>
@@ -70,21 +119,6 @@ export default class Home extends Component {
   render() {
     return (
       <div className="Home">
-        <LinkContainer
-          to={{
-            pathname: "/notes/new",
-            props: {
-              idx: this.getIndex()
-            }
-          }}
-        >
-          <ListGroupItem>
-            <h4>
-              {" "}
-              <b>{"\uFF0B"}</b> Create note
-            </h4>
-          </ListGroupItem>
-        </LinkContainer>
         {this.props.isAuthenticated ? this.renderNotes() : this.renderLanding()}
       </div>
     );
