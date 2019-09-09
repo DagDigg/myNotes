@@ -3,6 +3,14 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { LinkContainer } from "react-router-bootstrap";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
 import { API } from "aws-amplify";
+import styled from "styled-components";
+
+const NoteContainer = styled(LinkContainer)`
+  user-select: none;
+  padding: 16px;
+  margin: 10px;
+  transition: transform 0.2s linear;
+`;
 
 const reorder = (list, startIndex, endIndex) => {
   const result = Array.from(list);
@@ -13,23 +21,12 @@ const reorder = (list, startIndex, endIndex) => {
 };
 
 const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: "none",
-  padding: "16px",
-  margin: `0 0 8px 0`,
-
   // change background colour and scale if dragging
-  background: isDragging ? "lightgreen" : "white",
-  transform: `scale(${isDragging ? 1.1 : 1})`,
+  background: isDragging ? "lightblue" : "white",
+  transform: `scale(${isDragging ? 1.025 : 1})`,
 
   // styles we need to apply on draggables
   ...draggableStyle
-});
-
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? "lightblue" : "lightgrey",
-  padding: "8px",
-  width: 250
 });
 
 class NotesList extends Component {
@@ -56,23 +53,26 @@ class NotesList extends Component {
 
     firstNote.noteIndex = secondNoteIdx;
     secondNote.noteIndex = firstNoteIdx;
+    if (sourceIdx !== destinationIdx) {
+      await API.put("notes", `/notes/${secondNote.noteId}`, {
+        body: secondNote
+      });
 
-    await API.put("notes", `/notes/${secondNote.noteId}`, {
-      body: secondNote
-    });
-
-    await API.put("notes", `/notes/${firstNote.noteId}`, {
-      body: firstNote
-    });
+      await API.put("notes", `/notes/${firstNote.noteId}`, {
+        body: firstNote
+      });
+    }
   };
 
   renderNote = (note, isDragging, draggableProps) => (
-    <LinkContainer
+    <NoteContainer
       to={`/notes/${note.noteId}`}
       style={getItemStyle(isDragging, draggableProps)}
     >
-      <ListGroupItem>{note.content}</ListGroupItem>
-    </LinkContainer>
+      <ListGroupItem style={{ backgroundColor: "#EFEFE1" }}>
+        {note.content}
+      </ListGroupItem>
+    </NoteContainer>
   );
 
   onDragEnd = async result => {
