@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { API } from "aws-amplify";
 import { LinkContainer } from "react-router-bootstrap";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
 import NotesList from "./NotesList";
 import styled from "styled-components";
 
@@ -37,6 +36,10 @@ const NotesHeader = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 25px 16px;
+`;
+
+const NoteContainer = styled.div`
+  width: 100%;
 `;
 
 export default class Home extends Component {
@@ -109,9 +112,9 @@ export default class Home extends Component {
           </LinkContainer>
         </NotesHeader>
 
-        <ListGroup>
+        <NoteContainer>
           {!this.state.isLoading && this.renderNotesList(this.state.notes)}
-        </ListGroup>
+        </NoteContainer>
       </div>
     );
   }
