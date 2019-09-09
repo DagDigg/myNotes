@@ -4,7 +4,19 @@ import { Nav, Navbar } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Routes from "./Routes";
 import { Auth } from "aws-amplify";
-import "./App.css";
+import styled from "styled-components";
+
+const Container = styled.div`
+  text-align: center;
+  background-color: #fed99b;
+  height: 95vh;
+  border-radius: 5px;
+  flex: flex-grow;
+  width: 75vw;
+  margin: 0;
+  flex-basis: 1;
+  padding: 20px;
+`;
 
 class App extends Component {
   constructor(props) {
@@ -45,7 +57,7 @@ class App extends Component {
 
     return (
       !this.state.isAuthenticating && (
-        <div className="App container">
+        <Container>
           <Navbar fluid="true" collapseOnSelect className="nav">
             <Navbar.Brand>
               <Link to="/" className="logo">
@@ -61,11 +73,11 @@ class App extends Component {
                   <Fragment>
                     <LinkContainer to="/login">
                       <Nav.Link>
-                        <span className="navLink">Login</span>
+                        <span style={{ outline: "none" }}>Login</span>
                       </Nav.Link>
                     </LinkContainer>
                     <LinkContainer to="/signup">
-                      <Nav.Link className="navLink">Sign Up</Nav.Link>
+                      <Nav.Link style={{ outline: "none" }}>Sign Up</Nav.Link>
                     </LinkContainer>
                   </Fragment>
                 )}
@@ -73,7 +85,7 @@ class App extends Component {
             </Navbar.Collapse>
           </Navbar>
           <Routes childProps={childProps} />
-        </div>
+        </Container>
       )
     );
   }
