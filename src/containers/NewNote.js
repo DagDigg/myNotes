@@ -47,7 +47,8 @@ export default class NewNote extends Component {
       await this.createNote({
         attachment,
         content: this.state.content,
-        noteIndex: this.props.location.props.idx
+        noteIndex: this.props.location.props.idx,
+        noteTable: "droppable"
       });
       this.props.history.push("/");
     } catch (e) {
