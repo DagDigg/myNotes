@@ -1,22 +1,9 @@
 import React, { Component } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import { LinkContainer } from "react-router-bootstrap";
+import { DragDropContext } from "react-beautiful-dnd";
 import { API } from "aws-amplify";
 import styled from "styled-components";
-
-const NoteContainerLink = styled(LinkContainer)`
-  user-select: none;
-  padding: 16px;
-  margin: 10px;
-  transition: transform 0.2s linear;
-`;
-
-const NoteCard = styled.div`
-  background-color: #efefe1;
-  width: 250px;
-  border-radius: 5px;
-  border: 1px solid #444b6e;
-`;
+import Table from "./Table";
+import { listTables, postInitialTable } from "../API/tablesAPI";
 
 const TablesContainer = styled.div`
   display: flex;
@@ -24,8 +11,9 @@ const TablesContainer = styled.div`
   justify-content: space-evenly;
 `;
 
-const reorder = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
+const reorder = (list, table, startIndex, endIndex) => {
+  const result = Array.from(list[table]);
+  console.log(result);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
 
@@ -47,147 +35,95 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   return result;
 };
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // change background colour and scale if dragging
-  background: isDragging ? "lightblue" : "#efefe1",
-  transform: `scale(${isDragging ? 1.025 : 1})`,
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-});
-
 class NotesList extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      notes: this.props.notes,
-      tables: [],
-      test: [
-        { content: "test", noteId: "abcdef" },
-        { content: "test2", noteId: "abcdef" }
-      ]
+      notes: {},
+      tables: []
     };
   }
 
-  componentDidMount() {
-    const tables = this.getTables();
-    const notes = this.state.notes.sort((firstNote, secondNote) => {
-      return firstNote.noteIndex - secondNote.noteIndex;
-    });
-    this.setState({ notes, tables });
+  async componentDidMount() {
+    let tablesObj = await listTables();
+    let tables = this.getTableIds(tablesObj);
+    console.log(tables);
+    this.setState({ notes: this.props.notes, tables });
   }
 
-  getTables() {
-    const tables = [];
-    this.state.notes.forEach(note => {
-      if (!tables.includes(note.noteTable)) {
-        tables.push(note.noteTable);
-      }
-    });
-    return tables;
+  getNotesByTable(table) {
+    const notes = this.state.notes[table];
+    return notes;
   }
 
-  swapNotes = async (sourceIdx, destinationIdx) => {
-    const firstNote = this.state.notes[sourceIdx];
+  getTableIds(tables) {
+    let result = [];
+    tables.forEach(table => {
+      result.push(table.tableId);
+    });
+    return result;
+  }
+
+  swapNotes = async (sourceIdx, destinationIdx, table) => {
+    const tableNotes = this.state.notes[table];
+    const firstNote = tableNotes[sourceIdx];
     const firstNoteIdx = firstNote.noteIndex;
-    const secondNote = this.state.notes[destinationIdx];
+    const secondNote = tableNotes[destinationIdx];
     const secondNoteIdx = secondNote.noteIndex;
 
     firstNote.noteIndex = secondNoteIdx;
     secondNote.noteIndex = firstNoteIdx;
-    if (sourceIdx !== destinationIdx) {
-      await API.put("notes", `/notes/${secondNote.noteId}`, {
-        body: secondNote
-      });
 
-      await API.put("notes", `/notes/${firstNote.noteId}`, {
-        body: firstNote
-      });
-    }
+    await API.put("notes", `/notes/${secondNote.noteId}`, {
+      body: secondNote
+    });
+
+    await API.put("notes", `/notes/${firstNote.noteId}`, {
+      body: firstNote
+    });
   };
 
-  renderNote = (note, isDragging, draggableProps) => (
-    <NoteContainerLink
-      to={`/notes/${note.noteId}`}
-      style={getItemStyle(isDragging, draggableProps)}
-    >
-      <NoteCard>{note.content}</NoteCard>
-    </NoteContainerLink>
-  );
-
   onDragEnd = async result => {
+    const { source, destination } = result;
+    const { notes } = this.state;
+    console.log(result);
     //Dropped out of the list
     if (!result.destination) {
       return;
     }
 
-    const notes = reorder(
-      this.state.notes,
-      result.source.index,
-      result.destination.index
-    );
-
-    this.setState({ notes });
+    //If the swap occurs on the same table
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index !== destination.index
+    ) {
+      const orderedNotes = reorder(
+        this.state.notes,
+        source.index,
+        destination.index,
+        source.droppableId
+      );
+      notes[source.droppableId] = orderedNotes;
+      this.setState({ notes });
+      await this.swapNotes(source.index, destination.index, source.droppableId);
+    } else {
+      const notes = move(
+        this.getNotesByTable(source.droppableId),
+        this.getNotesByTable(destination.droppableId),
+        source,
+        destination
+      );
+    }
   };
 
   render() {
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <TablesContainer>
-          <Droppable droppableId="droppable">
-            {(provided, snapshot) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={{ backgroundColor: "white" }}
-              >
-                {this.state.notes.map((note, index) => (
-                  <Draggable
-                    key={note.noteId}
-                    draggableId={note.noteId}
-                    index={index}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        {this.renderNote(note, snapshot.isDragging)}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-
-          <Droppable droppableId="droppable2">
-            {(provided, snapshot) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                style={{ backgroundColor: "white" }}
-              >
-                {this.state.test.map((e, index) => (
-                  <Draggable key={e} draggableId={e} index={index}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        {this.renderNote(e, snapshot.isDragging)}
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
+          {this.state.tables.map(table => (
+            <Table tableName={table} notes={this.getNotesByTable(table)} />
+          ))}
         </TablesContainer>
       </DragDropContext>
     );
