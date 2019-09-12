@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { API } from "aws-amplify";
+import { listTables } from "../API/tablesAPI";
+import { getNotes } from "../API/notesAPI";
 import { LinkContainer } from "react-router-bootstrap";
 import NotesList from "./NotesList";
 import styled from "styled-components";
@@ -58,18 +60,15 @@ export default class Home extends Component {
       return;
     }
     try {
-      const rawNotes = await this.getNotes();
-      const tables = this.getTables(rawNotes);
-      const notes = this.getGroupedNotes(tables, rawNotes);
+      const rawNotes = await getNotes();
+      const tables = await listTables();
+      const tableIds = this.getTableIds(tables);
+      const notes = this.getGroupedNotes(tableIds, rawNotes);
       this.setState({ notes, tables });
     } catch (e) {
       alert(e);
     }
     this.setState({ isLoading: false });
-  }
-
-  getNotes() {
-    return API.get("notes", "/notes");
   }
 
   getGroupedNotes(tables, notes) {
@@ -86,15 +85,13 @@ export default class Home extends Component {
     return groupedNotes;
   }
 
-  getTables(notes) {
-    const tables = [];
-    notes.forEach(note => {
-      if (!tables.includes(note.noteTable)) {
-        tables.push(note.noteTable);
-      }
+  getTableIds(tables) {
+    const tableIds = [];
+    tables.forEach(table => {
+      tableIds.push(table.tableId);
     });
 
-    return tables;
+    return tableIds;
   }
   renderLanding() {
     return (
