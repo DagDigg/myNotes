@@ -5,7 +5,7 @@ export const postInitialTable = async () => {
   try {
     result = API.post("notes", "/tables", {
       body: {
-        tableId: "initial"
+        tableName: "To Do"
       }
     });
   } catch (e) {
