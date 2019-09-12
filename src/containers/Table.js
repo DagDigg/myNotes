@@ -37,36 +37,40 @@ const Table = ({ tableName, notes }) => {
   );
 
   return (
-    <Droppable droppableId={tableName}>
-      {(provided, snapshot) => (
-        <div
-          {...provided.droppableProps}
-          ref={provided.innerRef}
-          style={{ backgroundColor: "white" }}
-        >
-          {notes.map((note, index) => {
-            return (
-              <Draggable
-                key={note.noteId}
-                draggableId={note.noteId}
-                index={index}
-              >
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
+    <>
+      {notes ? (
+        <Droppable droppableId={tableName} key={tableName}>
+          {(provided, snapshot) => (
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              style={{ backgroundColor: "white" }}
+            >
+              {notes.map((note, index) => {
+                return (
+                  <Draggable
+                    key={note.noteId}
+                    draggableId={note.noteId}
+                    index={index}
                   >
-                    {renderNote(note, snapshot.isDragging)}
-                  </div>
-                )}
-              </Draggable>
-            );
-          })}
-          {provided.placeholder}
-        </div>
-      )}
-    </Droppable>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        {renderNote(note, snapshot.isDragging)}
+                      </div>
+                    )}
+                  </Draggable>
+                );
+              })}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      ) : null}
+    </>
   );
 };
 
