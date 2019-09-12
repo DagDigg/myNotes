@@ -13,7 +13,8 @@ export default class NewNote extends Component {
 
     this.state = {
       isLoading: false,
-      content: ""
+      content: "",
+      noteTable: "droppable"
     };
   }
 
@@ -47,8 +48,7 @@ export default class NewNote extends Component {
       await this.createNote({
         attachment,
         content: this.state.content,
-        noteIndex: this.props.location.props.idx,
-        noteTable: "droppable"
+        noteTable: this.state.noteTable
       });
       this.props.history.push("/");
     } catch (e) {
@@ -79,6 +79,10 @@ export default class NewNote extends Component {
           <FormGroup controlId="file">
             <FormLabel>Attachment:</FormLabel>
             <FormControl type="file" onChange={this.handleFileChange} />
+          </FormGroup>
+          <FormGroup controlId="noteTable">
+            <FormLabel>Table:</FormLabel>
+            <FormControl type="textarea" onChange={this.handleChange} />
           </FormGroup>
           <LoaderButton
             block
