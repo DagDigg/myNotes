@@ -48,7 +48,8 @@ export default class Home extends Component {
 
     this.state = {
       isLoading: true,
-      notes: []
+      notes: {},
+      tables: []
     };
   }
 
@@ -57,8 +58,10 @@ export default class Home extends Component {
       return;
     }
     try {
-      const notes = await this.getNotes();
-      this.setState({ notes });
+      const rawNotes = await this.getNotes();
+      const tables = this.getTables(rawNotes);
+      const notes = this.getGroupedNotes(tables, rawNotes);
+      this.setState({ notes, tables });
     } catch (e) {
       alert(e);
     }
@@ -69,12 +72,30 @@ export default class Home extends Component {
     return API.get("notes", "/notes");
   }
 
-  getIndex() {
-    const lastNote = this.state.notes.slice(-1).pop();
-    const idx = lastNote ? lastNote.noteIndex + 1 : 1;
-    return idx;
+  getGroupedNotes(tables, notes) {
+    const groupedNotes = {};
+    tables.forEach(table => {
+      groupedNotes[table] = [];
+      notes.forEach(note => {
+        if (note.noteTable === table) {
+          groupedNotes[table].push(note);
+        }
+      });
+    });
+
+    return groupedNotes;
   }
 
+  getTables(notes) {
+    const tables = [];
+    notes.forEach(note => {
+      if (!tables.includes(note.noteTable)) {
+        tables.push(note.noteTable);
+      }
+    });
+
+    return tables;
+  }
   renderLanding() {
     return (
       <div className="lander">
@@ -88,8 +109,8 @@ export default class Home extends Component {
     return content.length > 70 ? content.substring(0, 84) + " ..." : content;
   }
 
-  renderNotesList(notes) {
-    return <NotesList notes={notes} />;
+  renderNotesList(notes, tables) {
+    return <NotesList notes={notes} tables={tables} />;
   }
 
   renderNotes() {
@@ -102,7 +123,7 @@ export default class Home extends Component {
             to={{
               pathname: "/notes/new",
               props: {
-                idx: this.getIndex()
+                notes: this.state.notes
               }
             }}
           >
@@ -113,7 +134,8 @@ export default class Home extends Component {
         </NotesHeader>
 
         <NoteContainer>
-          {!this.state.isLoading && this.renderNotesList(this.state.notes)}
+          {!this.state.isLoading &&
+            this.renderNotesList(this.state.notes, this.state.tables)}
         </NoteContainer>
       </div>
     );
