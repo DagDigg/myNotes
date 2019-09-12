@@ -40,16 +40,9 @@ class NotesList extends Component {
     super(props);
 
     this.state = {
-      notes: {},
-      tables: []
+      notes: this.props.notes,
+      tables: this.props.tables
     };
-  }
-
-  async componentDidMount() {
-    let tablesObj = await listTables();
-    let tables = this.getTableIds(tablesObj);
-    console.log(tables);
-    this.setState({ notes: this.props.notes, tables });
   }
 
   getNotesByTable(table) {
@@ -119,13 +112,21 @@ class NotesList extends Component {
 
   render() {
     return (
-      <DragDropContext onDragEnd={this.onDragEnd}>
-        <TablesContainer>
-          {this.state.tables.map(table => (
-            <Table tableName={table} notes={this.getNotesByTable(table)} />
-          ))}
-        </TablesContainer>
-      </DragDropContext>
+      <div>
+        {this.state.tables ? (
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            <TablesContainer>
+              {this.state.tables.map(table => (
+                <Table
+                  tableName={table.tableName}
+                  notes={this.getNotesByTable(table.tableId)}
+                  key={table.tableId}
+                />
+              ))}
+            </TablesContainer>
+          </DragDropContext>
+        ) : null}
+      </div>
     );
   }
 }
