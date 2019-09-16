@@ -31,7 +31,7 @@ export const updateTable = async (tableId, tableName, notes) => {
 };
 
 //GETs & LISTs
-export const getTableNotes = async tableId => {
+export const getTable = async tableId => {
   let result;
   try {
     result = API.get("notes", `/tables/${tableId}`);
