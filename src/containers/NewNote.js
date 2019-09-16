@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel, FormCheck } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { API } from "aws-amplify";
 import config from "../config";
 import { s3Upload } from "../libs/awsLib";
+import { updateTable, listTables } from "../API/tablesAPI";
 
 export default class NewNote extends Component {
   constructor(props) {
@@ -14,8 +15,28 @@ export default class NewNote extends Component {
     this.state = {
       isLoading: false,
       content: "",
-      noteTable: "droppable"
+      noteTable: "ab3617e0-d55b-11e9-a002-29c83487612b",
+      tables: []
     };
+  }
+
+  async componentDidMount() {
+    //Check if the NewNote page has been clicked or directly accessed
+    const tables = this.props.location.props
+      ? this.props.location.props.tables
+      : await listTables();
+    console.log(tables);
+    this.setState({ tables });
+  }
+
+  getTableName(tables, id) {
+    let tableName = "";
+    tables.forEach(table => {
+      if (table.tableId === id) {
+        tableName = table.tableName;
+      }
+    });
+    return tableName;
   }
 
   validateForm() {
@@ -45,14 +66,21 @@ export default class NewNote extends Component {
 
     try {
       const attachment = this.file ? await s3Upload(this.file) : null;
+      const uuid = require("uuid/v1");
+      const noteId = uuid();
+
       await this.createNote({
+        noteId: noteId,
         attachment,
         content: this.state.content,
         noteTable: this.state.noteTable
       });
+
+      await this.addNoteToTable(noteId);
+
       this.props.history.push("/");
     } catch (e) {
-      alert(e);
+      console.log(e);
       this.setState({ isLoading: false });
     }
   };
@@ -60,6 +88,37 @@ export default class NewNote extends Component {
   createNote(note) {
     return API.post("notes", "/notes", {
       body: note
+    });
+  }
+
+  addNoteToTable = async noteId => {
+    const tableObj = this.state.tables.find(table => {
+      return table.tableId === this.state.noteTable;
+    });
+
+    const notes = tableObj.notes || [];
+    const idx = notes.length;
+    const newNote = { noteId: noteId, noteIndex: idx };
+    const tableName = this.getTableName(
+      this.state.tables,
+      this.state.noteTable
+    );
+    notes.push(newNote);
+    console.log(tableName);
+    return await updateTable(this.state.noteTable, tableName, notes);
+  };
+
+  renderTablesRadio() {
+    return this.state.tables.map(table => {
+      return (
+        <FormCheck
+          inline
+          label={table.tableName}
+          type="radio"
+          value={table.tableId}
+          onChange={this.handleChange}
+        />
+      );
     });
   }
 
@@ -82,7 +141,7 @@ export default class NewNote extends Component {
           </FormGroup>
           <FormGroup controlId="noteTable">
             <FormLabel>Table:</FormLabel>
-            <FormControl type="textarea" onChange={this.handleChange} />
+            {this.renderTablesRadio()}
           </FormGroup>
           <LoaderButton
             block
