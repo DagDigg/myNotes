@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
-import { API } from "aws-amplify";
 import styled from "styled-components";
 import Table from "./Table";
-import { listTables, updateTable } from "../API/tablesAPI";
+import { updateTable } from "../API/tablesAPI";
+import { getNotesByTable } from "../utils/notesUtils";
 
 const TablesContainer = styled.div`
   display: flex;
@@ -46,22 +46,9 @@ class NotesList extends Component {
     };
   }
 
-  getNotesByTable(table) {
-    const notes = this.state.notes[table];
-    return notes;
-  }
-
-  getTableIds(tables) {
-    let result = [];
-    tables.forEach(table => {
-      result.push(table.tableId);
-    });
-    return result;
-  }
-
   updateNotesIndexes = async (tableId, notes) => {
     const newNotes = [];
-    const tableName = this.getNotesByTable(tableId);
+    const tableName = getNotesByTable(this.state.notes, tableId);
     notes.forEach((note, index) => {
       const noteObj = { noteId: note.noteId, noteIndex: index };
       newNotes.push(noteObj);
@@ -95,8 +82,8 @@ class NotesList extends Component {
       await this.updateNotesIndexes(source.droppableId, orderedNotes);
     } else {
       const notes = move(
-        this.getNotesByTable(source.droppableId),
-        this.getNotesByTable(destination.droppableId),
+        getNotesByTable(this.state.notes, source.droppableId),
+        getNotesByTable(this.state.notes, destination.droppableId),
         source,
         destination
       );
@@ -113,7 +100,7 @@ class NotesList extends Component {
                 <Table
                   tableName={table.tableName}
                   tableId={table.tableId}
-                  notes={this.getNotesByTable(table.tableId)}
+                  notes={getNotesByTable(this.state.notes, table.tableId)}
                   key={table.tableId}
                 />
               ))}
