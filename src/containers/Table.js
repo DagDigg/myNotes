@@ -3,7 +3,7 @@ import { Droppable, Draggable } from "react-beautiful-dnd";
 import { LinkContainer } from "react-router-bootstrap";
 import styled from "styled-components";
 
-const Table = ({ tableName, notes }) => {
+const Table = ({ tableName, tableId, notes }) => {
   const NoteContainerLink = styled(LinkContainer)`
     user-select: none;
     padding: 16px;
@@ -39,7 +39,7 @@ const Table = ({ tableName, notes }) => {
   return (
     <>
       {notes ? (
-        <Droppable droppableId={tableName} key={tableName}>
+        <Droppable droppableId={tableId} key={tableName}>
           {(provided, snapshot) => (
             <div
               {...provided.droppableProps}
