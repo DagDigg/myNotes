@@ -112,6 +112,16 @@ export default class Home extends Component {
           </LinkContainer>
         </NotesHeader>
 
+        <LinkContainer
+          to={{
+            pathname: "/tables/new",
+            props: {
+              tables: this.state.tables
+            }
+          }}
+        >
+          <h5>Create Table</h5>
+        </LinkContainer>
         <NoteContainer>
           {!this.state.isLoading &&
             this.renderNotesList(this.state.notes, this.state.tables)}
