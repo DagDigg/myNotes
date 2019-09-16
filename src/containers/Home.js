@@ -71,7 +71,11 @@ export default class Home extends Component {
     this.setState({ isLoading: false });
   }
 
+  //Creates notes Object grouped by tableId
   getGroupedNotes(tables, notes) {
+    if (!notes.length) {
+      return null;
+    }
     const groupedNotes = {};
     tables.forEach(table => {
       groupedNotes[table] = [];
@@ -85,6 +89,7 @@ export default class Home extends Component {
     return groupedNotes;
   }
 
+  //Gets tableId from  tables Object
   getTableIds(tables) {
     const tableIds = [];
     tables.forEach(table => {
@@ -93,6 +98,8 @@ export default class Home extends Component {
 
     return tableIds;
   }
+
+  //Renders landing page
   renderLanding() {
     return (
       <div className="lander">
@@ -102,14 +109,17 @@ export default class Home extends Component {
     );
   }
 
+  //Trims note text if it's too long
   noteHeader(content) {
     return content.length > 70 ? content.substring(0, 84) + " ..." : content;
   }
 
+  //Renders NotesList.js Component. Called inside renderNotes()
   renderNotesList(notes, tables) {
     return <NotesList notes={notes} tables={tables} />;
   }
 
+  //Renders NotesList component and NewNote component
   renderNotes() {
     return (
       <div className="notes">
@@ -120,7 +130,7 @@ export default class Home extends Component {
             to={{
               pathname: "/notes/new",
               props: {
-                notes: this.state.notes
+                tables: this.state.tables
               }
             }}
           >
