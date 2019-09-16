@@ -6,6 +6,7 @@ import Login from "./containers/Login";
 import SignUp from "./containers/SignUp";
 import AppliedRoute from "./components/AppliedRoute";
 import NewNote from "./containers/NewNote";
+import NewTable from "./containers/NewTable";
 import Notes from "./containers/Notes";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnAuthenticatedRoute from "./components/UnAuthenticatedRoute";
@@ -30,6 +31,12 @@ export default ({ childProps }) => (
       path="/notes/new"
       exact
       component={NewNote}
+      props={childProps}
+    />
+    <AuthenticatedRoute
+      path="/tables/new"
+      exact
+      component={NewTable}
       props={childProps}
     />
     <AuthenticatedRoute
