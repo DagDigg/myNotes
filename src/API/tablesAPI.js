@@ -1,5 +1,6 @@
 import { API } from "aws-amplify";
 
+//POSTs & UPDATEs
 export const postInitialTable = async () => {
   let result;
   try {
@@ -14,6 +15,22 @@ export const postInitialTable = async () => {
   return await result;
 };
 
+export const updateTable = async (tableId, tableName, notes) => {
+  let result;
+  try {
+    result = API.put("notes", `/tables/${tableId}`, {
+      body: {
+        tableName: tableName,
+        notes: notes
+      }
+    });
+  } catch (e) {
+    alert(e);
+  }
+  return result;
+};
+
+//GETs & LISTs
 export const getTableNotes = async tableId => {
   let result;
   try {
