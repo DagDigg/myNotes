@@ -4,6 +4,7 @@ import config from "../config";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
+import { getTable, updateTable } from "../API/tablesAPI";
 
 export default class Notes extends Component {
   constructor(props) {
@@ -55,6 +56,18 @@ export default class Notes extends Component {
 
   async removeAttachment(attachment) {
     return Storage.vault.remove(attachment);
+  }
+
+  async removeNoteFromTable() {
+    const noteId = this.state.note.noteId;
+    const tableId = this.state.note.noteTable;
+    const table = await getTable(tableId);
+    const tableName = table.tableName;
+    const newTableNotes = table.notes.filter(note => {
+      return note.noteId !== noteId;
+    });
+
+    return await updateTable(tableId, tableName, newTableNotes);
   }
 
   validateForm() {
@@ -123,6 +136,7 @@ export default class Notes extends Component {
       if (this.state.note.attachment) {
         await this.removeAttachment(this.state.note.attachment);
       }
+      await this.removeNoteFromTable();
       await this.deleteNote();
       this.props.history.push("/");
     } catch (e) {
