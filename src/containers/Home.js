@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import { API } from "aws-amplify";
 import { listTables } from "../API/tablesAPI";
 import { getNotes } from "../API/notesAPI";
 import { LinkContainer } from "react-router-bootstrap";
 import NotesList from "./NotesList";
 import styled from "styled-components";
-
+import { getTableIds } from "../utils/tablesUtils";
+import { getGroupedNotes } from "../utils/notesUtils";
 import "../Home.css";
 
 const CreateNote = styled.div`
@@ -62,41 +62,13 @@ export default class Home extends Component {
     try {
       const rawNotes = await getNotes();
       const tables = await listTables();
-      const tableIds = this.getTableIds(tables);
-      const notes = this.getGroupedNotes(tableIds, rawNotes);
+      const tableIds = getTableIds(tables);
+      const notes = getGroupedNotes(tableIds, rawNotes);
       this.setState({ notes, tables });
     } catch (e) {
       alert(e);
     }
     this.setState({ isLoading: false });
-  }
-
-  //Creates notes Object grouped by tableId
-  getGroupedNotes(tables, notes) {
-    if (!notes.length) {
-      return null;
-    }
-    const groupedNotes = {};
-    tables.forEach(table => {
-      groupedNotes[table] = [];
-      notes.forEach(note => {
-        if (note.noteTable === table) {
-          groupedNotes[table].push(note);
-        }
-      });
-    });
-
-    return groupedNotes;
-  }
-
-  //Gets tableId from  tables Object
-  getTableIds(tables) {
-    const tableIds = [];
-    tables.forEach(table => {
-      tableIds.push(table.tableId);
-    });
-
-    return tableIds;
   }
 
   //Renders landing page
