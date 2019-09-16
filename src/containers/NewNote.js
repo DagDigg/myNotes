@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormGroup, FormControl, FormLabel, FormCheck } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { API } from "aws-amplify";
 import config from "../config";
@@ -26,8 +26,9 @@ export default class NewNote extends Component {
     const tables = this.props.location.props
       ? this.props.location.props.tables
       : await listTables();
-    console.log(tables);
-    this.setState({ tables });
+    //Reverse tables and get first tableId
+    const noteTable = tables.reverse()[0].tableId;
+    this.setState({ tables, noteTable });
   }
 
   validateForm() {
@@ -95,17 +96,9 @@ export default class NewNote extends Component {
     return await updateTable(this.state.noteTable, tableName, notes);
   };
 
-  renderTablesRadio() {
+  renderTablesOptions() {
     return this.state.tables.map(table => {
-      return (
-        <FormCheck
-          inline
-          label={table.tableName}
-          type="radio"
-          value={table.tableId}
-          onChange={this.handleChange}
-        />
-      );
+      return <option value={table.tableId}>{table.tableName}</option>;
     });
   }
 
@@ -128,7 +121,9 @@ export default class NewNote extends Component {
           </FormGroup>
           <FormGroup controlId="noteTable">
             <FormLabel>Table:</FormLabel>
-            {this.renderTablesRadio()}
+            <FormControl as="select" onChange={this.handleChange}>
+              {this.renderTablesOptions()}
+            </FormControl>
           </FormGroup>
           <LoaderButton
             block
