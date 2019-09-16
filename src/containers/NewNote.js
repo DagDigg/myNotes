@@ -5,6 +5,7 @@ import { API } from "aws-amplify";
 import config from "../config";
 import { s3Upload } from "../libs/awsLib";
 import { updateTable, listTables } from "../API/tablesAPI";
+import { getTableName } from "../utils/tablesUtils";
 
 export default class NewNote extends Component {
   constructor(props) {
@@ -27,16 +28,6 @@ export default class NewNote extends Component {
       : await listTables();
     console.log(tables);
     this.setState({ tables });
-  }
-
-  getTableName(tables, id) {
-    let tableName = "";
-    tables.forEach(table => {
-      if (table.tableId === id) {
-        tableName = table.tableName;
-      }
-    });
-    return tableName;
   }
 
   validateForm() {
@@ -99,12 +90,8 @@ export default class NewNote extends Component {
     const notes = tableObj.notes || [];
     const idx = notes.length;
     const newNote = { noteId: noteId, noteIndex: idx };
-    const tableName = this.getTableName(
-      this.state.tables,
-      this.state.noteTable
-    );
+    const tableName = getTableName(this.state.tables, this.state.noteTable);
     notes.push(newNote);
-    console.log(tableName);
     return await updateTable(this.state.noteTable, tableName, notes);
   };
 
