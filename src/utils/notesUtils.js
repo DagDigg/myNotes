@@ -8,3 +8,26 @@ export const getNotesByTable = (notes, table) => {
   const extractedNotes = notes[table];
   return extractedNotes;
 };
+
+/**
+ * Creates notes Object grouped by tableId
+ * @param {Array} tables
+ * @param {Array} notes
+ * @return {Object} Notes grouped by tableId
+ */
+export const getGroupedNotes = (tables, notes) => {
+  if (!notes.length) {
+    return null;
+  }
+  const groupedNotes = {};
+  tables.forEach(table => {
+    groupedNotes[table] = [];
+    notes.forEach(note => {
+      if (note.noteTable === table) {
+        groupedNotes[table].push(note);
+      }
+    });
+  });
+
+  return groupedNotes;
+};
