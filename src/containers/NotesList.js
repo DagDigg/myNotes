@@ -3,7 +3,7 @@ import { DragDropContext } from "react-beautiful-dnd";
 import { API } from "aws-amplify";
 import styled from "styled-components";
 import Table from "./Table";
-import { listTables, postInitialTable } from "../API/tablesAPI";
+import { listTables, updateTable } from "../API/tablesAPI";
 
 const TablesContainer = styled.div`
   display: flex;
@@ -41,7 +41,8 @@ class NotesList extends Component {
 
     this.state = {
       notes: this.props.notes,
-      tables: this.props.tables
+      tables: this.props.tables,
+      render: false
     };
   }
 
@@ -58,23 +59,15 @@ class NotesList extends Component {
     return result;
   }
 
-  swapNotes = async (sourceIdx, destinationIdx, table) => {
-    const tableNotes = this.state.notes[table];
-    const firstNote = tableNotes[sourceIdx];
-    const firstNoteIdx = firstNote.noteIndex;
-    const secondNote = tableNotes[destinationIdx];
-    const secondNoteIdx = secondNote.noteIndex;
-
-    firstNote.noteIndex = secondNoteIdx;
-    secondNote.noteIndex = firstNoteIdx;
-
-    await API.put("notes", `/notes/${secondNote.noteId}`, {
-      body: secondNote
+  updateNotesIndexes = async (tableId, notes) => {
+    const newNotes = [];
+    const tableName = this.getNotesByTable(tableId);
+    notes.forEach((note, index) => {
+      const noteObj = { noteId: note.noteId, noteIndex: index };
+      newNotes.push(noteObj);
     });
 
-    await API.put("notes", `/notes/${firstNote.noteId}`, {
-      body: firstNote
-    });
+    return await updateTable(tableId, tableName, newNotes);
   };
 
   onDragEnd = async result => {
@@ -93,13 +86,13 @@ class NotesList extends Component {
     ) {
       const orderedNotes = reorder(
         this.state.notes,
+        source.droppableId,
         source.index,
-        destination.index,
-        source.droppableId
+        destination.index
       );
       notes[source.droppableId] = orderedNotes;
       this.setState({ notes });
-      await this.swapNotes(source.index, destination.index, source.droppableId);
+      await this.updateNotesIndexes(source.droppableId, orderedNotes);
     } else {
       const notes = move(
         this.getNotesByTable(source.droppableId),
@@ -113,12 +106,13 @@ class NotesList extends Component {
   render() {
     return (
       <div>
-        {this.state.tables ? (
+        {this.state.notes ? (
           <DragDropContext onDragEnd={this.onDragEnd}>
             <TablesContainer>
               {this.state.tables.map(table => (
                 <Table
                   tableName={table.tableName}
+                  tableId={table.tableId}
                   notes={this.getNotesByTable(table.tableId)}
                   key={table.tableId}
                 />
