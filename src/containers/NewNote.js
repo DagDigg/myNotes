@@ -26,8 +26,8 @@ export default class NewNote extends Component {
     const tables = this.props.location.props
       ? this.props.location.props.tables
       : await listTables();
-    //Reverse tables and get first tableId
-    const noteTable = tables.reverse()[0].tableId;
+    //Get first tableId
+    const noteTable = tables[0].tableId;
     this.setState({ tables, noteTable });
   }
 
@@ -129,7 +129,7 @@ export default class NewNote extends Component {
             block
             type="submit"
             text="Create note"
-            disabled={!this.validateForm}
+            disabled={!this.validateForm()}
             loadingText="Creating note..."
             isLoading={this.state.isLoading}
           />
