@@ -1,11 +1,11 @@
 /**
  * Gets the notes corrisponding to the table
  * @param {Object} notes Total notes
- * @param {string} table The table from which the notes should be extracted
+ * @param {string} table The table ID from which the notes should be extracted
  * @return {Array} A list of extracted notes
  */
-export const getNotesByTable = (notes, table) => {
-  const extractedNotes = notes[table];
+export const getNotesByTable = (notes, tableId) => {
+  const extractedNotes = notes[tableId];
   return extractedNotes;
 };
 
@@ -30,4 +30,23 @@ export const getGroupedNotes = (tables, notes) => {
   });
 
   return groupedNotes;
+};
+
+export const reorderNotes = (notes, tables) => {
+  const orderedNotes = {};
+
+  tables.forEach(table => {
+    const tableId = table.tableId;
+    orderedNotes[tableId] = [];
+
+    table.notes.forEach(tableNote => {
+      const noteId = tableNote.noteId;
+      const noteObj = notes[tableId].find(note => {
+        return note.noteId === noteId;
+      });
+      orderedNotes[tableId].push(noteObj);
+    });
+  });
+
+  return orderedNotes;
 };
