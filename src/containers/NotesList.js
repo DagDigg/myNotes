@@ -3,7 +3,8 @@ import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import Table from "./Table";
 import { updateTable } from "../API/tablesAPI";
-import { getNotesByTable } from "../utils/notesUtils";
+import { getNotesByTable, reorderNotes } from "../utils/notesUtils";
+import { getTableName } from "../utils/tablesUtils";
 
 const TablesContainer = styled.div`
   display: flex;
@@ -46,9 +47,14 @@ class NotesList extends Component {
     };
   }
 
+  componentDidMount() {
+    const orderedNotes = reorderNotes(this.state.notes, this.state.tables);
+    this.setState({ notes: orderedNotes });
+  }
+
   updateNotesIndexes = async (tableId, notes) => {
     const newNotes = [];
-    const tableName = getNotesByTable(this.state.notes, tableId);
+    const tableName = getTableName(this.state.tables, tableId);
     notes.forEach((note, index) => {
       const noteObj = { noteId: note.noteId, noteIndex: index };
       newNotes.push(noteObj);
