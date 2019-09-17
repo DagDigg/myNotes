@@ -5,13 +5,10 @@
  * @return {string} Name of the table
  */
 export const getTableName = (tables, id) => {
-  let tableName = "";
-  tables.forEach(table => {
-    if (table.tableId === id) {
-      tableName = table.tableName;
-    }
+  const tableMatched = tables.find(table => {
+    return table.tableId === id;
   });
-  return tableName;
+  return tableMatched.tableName;
 };
 
 /**
