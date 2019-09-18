@@ -8,6 +8,8 @@ import { getTableIds } from "../utils/tablesUtils";
 import { getGroupedNotes } from "../utils/notesUtils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import LandingPage from "./LandingPage";
+
 import "../Home.css";
 
 const Title = styled.h1`
@@ -102,16 +104,6 @@ export default class Home extends Component {
     this.setState({ isLoading: false });
   }
 
-  //Renders landing page
-  renderLanding() {
-    return (
-      <div className="lander">
-        <h4>myNotes</h4>
-        <p>Simple notes taking app.</p>
-      </div>
-    );
-  }
-
   //Trims note text if it's too long
   noteHeader(content) {
     return content.length > 70 ? content.substring(0, 84) + " ..." : content;
@@ -178,7 +170,7 @@ export default class Home extends Component {
   render() {
     return (
       <div className="Home">
-        {this.props.isAuthenticated ? this.renderNotes() : this.renderLanding()}
+        {this.props.isAuthenticated ? this.renderNotes() : <LandingPage />}
       </div>
     );
   }
