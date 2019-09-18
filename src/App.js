@@ -5,10 +5,23 @@ import { LinkContainer } from "react-router-bootstrap";
 import Routes from "./Routes";
 import { Auth } from "aws-amplify";
 import styled from "styled-components";
+import { ThemeProvider } from "styled-components";
+import lightTheme from "./themes/light";
+import darkTheme from "./themes/dark";
 
 const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${props => props.theme.colors.background};
+`;
+
+const AppContainer = styled.div`
   text-align: center;
-  background-color: #fed99b;
+  background-color: ${props => props.theme.colors.appBackground};
+  box-shadow: ${props => props.theme.colors.shadowColor}
   height: 95vh;
   border-radius: 5px;
   flex: flex-grow;
@@ -57,35 +70,41 @@ class App extends Component {
 
     return (
       !this.state.isAuthenticating && (
-        <Container>
-          <Navbar fluid="true" collapseOnSelect className="nav">
-            <Navbar.Brand>
-              <Link to="/" className="logo">
-                myNotes
-              </Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-            <Navbar.Collapse className="justify-content-end">
-              <Nav>
-                {this.state.isAuthenticated ? (
-                  <Nav.Link onClick={this.handleLogout}>Logout</Nav.Link>
-                ) : (
-                  <Fragment>
-                    <LinkContainer to="/login">
-                      <Nav.Link>
-                        <span style={{ outline: "none" }}>Login</span>
-                      </Nav.Link>
-                    </LinkContainer>
-                    <LinkContainer to="/signup">
-                      <Nav.Link style={{ outline: "none" }}>Sign Up</Nav.Link>
-                    </LinkContainer>
-                  </Fragment>
-                )}
-              </Nav>
-            </Navbar.Collapse>
-          </Navbar>
-          <Routes childProps={childProps} />
-        </Container>
+        <ThemeProvider theme={darkTheme}>
+          <Container>
+            <AppContainer>
+              <Navbar fluid="true" collapseOnSelect className="nav">
+                <Navbar.Brand>
+                  <Link to="/" className="logo">
+                    myNotes
+                  </Link>
+                </Navbar.Brand>
+                <Navbar.Toggle />
+                <Navbar.Collapse className="justify-content-end">
+                  <Nav>
+                    {this.state.isAuthenticated ? (
+                      <Nav.Link onClick={this.handleLogout}>Logout</Nav.Link>
+                    ) : (
+                      <Fragment>
+                        <LinkContainer to="/login">
+                          <Nav.Link>
+                            <span style={{ outline: "none" }}>Login</span>
+                          </Nav.Link>
+                        </LinkContainer>
+                        <LinkContainer to="/signup">
+                          <Nav.Link style={{ outline: "none" }}>
+                            Sign Up
+                          </Nav.Link>
+                        </LinkContainer>
+                      </Fragment>
+                    )}
+                  </Nav>
+                </Navbar.Collapse>
+              </Navbar>
+              <Routes childProps={childProps} />
+            </AppContainer>
+          </Container>
+        </ThemeProvider>
       )
     );
   }
