@@ -21,7 +21,7 @@ const Container = styled.div`
 const AppContainer = styled.div`
   text-align: center;
   background-color: ${props => props.theme.colors.appBackground};
-  box-shadow: ${props => props.theme.colors.shadowColor}
+  box-shadow: ${props => props.theme.colors.shadowColor};
   height: 95vh;
   border-radius: 5px;
   flex: flex-grow;
@@ -29,6 +29,18 @@ const AppContainer = styled.div`
   margin: 0;
   flex-basis: 1;
   padding: 20px;
+`;
+
+const Logo = styled.span`
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  color: ${props => props.theme.colors.secondaryText};
+`;
+
+const AuthenticationBtn = styled.span`
+  text-decoration: none;
+  color: ${props => props.theme.colors.secondaryText};
 `;
 
 class App extends Component {
@@ -76,24 +88,26 @@ class App extends Component {
               <Navbar fluid="true" collapseOnSelect className="nav">
                 <Navbar.Brand>
                   <Link to="/" className="logo">
-                    myNotes
+                    <Logo>myNotes</Logo>
                   </Link>
                 </Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
                   <Nav>
                     {this.state.isAuthenticated ? (
-                      <Nav.Link onClick={this.handleLogout}>Logout</Nav.Link>
+                      <Nav.Link onClick={this.handleLogout}>
+                        <AuthenticationBtn>Logout</AuthenticationBtn>
+                      </Nav.Link>
                     ) : (
                       <Fragment>
                         <LinkContainer to="/login">
                           <Nav.Link>
-                            <span style={{ outline: "none" }}>Login</span>
+                            <AuthenticationBtn>Login</AuthenticationBtn>
                           </Nav.Link>
                         </LinkContainer>
                         <LinkContainer to="/signup">
-                          <Nav.Link style={{ outline: "none" }}>
-                            Sign Up
+                          <Nav.Link>
+                            <AuthenticationBtn>Sign up</AuthenticationBtn>
                           </Nav.Link>
                         </LinkContainer>
                       </Fragment>
