@@ -21,9 +21,9 @@ const NewTable = ({ history }) => {
       await createTable(tableName);
       history.push("/");
     } catch (e) {
+      setIsLoading(false);
       alert(e);
     }
-    setIsLoading(false);
   };
 
   return (
