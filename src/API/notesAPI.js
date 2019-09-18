@@ -27,3 +27,40 @@ export const updateNoteTable = async note => {
 
   return await response;
 };
+
+/**
+ * Deletes note by ID
+ * @param {string} noteId ID of the note
+ *
+ * @return {Promise} Promise response
+ */
+export const deleteNote = async noteId => {
+  let result;
+  try {
+    result = API.del("notes", `/notes/${noteId}`);
+  } catch (e) {
+    alert(e);
+  }
+
+  return await result;
+};
+
+/**
+ * PUTs a note
+ * @param {Object} note Note body value
+ * @param {string} noteId ID of the note
+ *
+ * @return {Promise} Promise response
+ */
+export const saveNote = async (note, noteId) => {
+  let result;
+  try {
+    result = API.put("notes", `/notes/${noteId}`, {
+      body: note
+    });
+  } catch (e) {
+    alert(e);
+  }
+
+  return await result;
+};
