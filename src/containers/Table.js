@@ -33,7 +33,7 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
     justify-content: center;
     align-items: center;
     color: ${props => props.theme.colors.secondaryText};
-    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
     text-align: center;
     vertical-align: middle;
     &:hover {
@@ -62,9 +62,10 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
   const TableContainer = styled.div`
     display: inline-block;
     background-color: ${props => props.theme.colors.cardBackground};
-    box-shadow: ${props => props.theme.colors.shadowColor}
+    box-shadow: ${props => props.theme.colors.shadowColor};
     min-width: 270px;
     min-height: 220px;
+    max-width: 50%;
     flex-grow: 1;
     border-radius: 10px;
     margin: 10px;
@@ -78,6 +79,9 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
   `;
 
   const asyncForEach = async (array, callback) => {
+    if (!array) {
+      return;
+    }
     for (let i = 0; i < array.length; i++) {
       await callback(array[i], i, array);
     }
