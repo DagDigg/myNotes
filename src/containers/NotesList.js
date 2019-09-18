@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { DragDropContext } from "react-beautiful-dnd";
 import styled from "styled-components";
 import Table from "./Table";
+import CreateTable from "./CreateTable";
 import { updateTable } from "../API/tablesAPI";
 import { updateNoteTable } from "../API/notesAPI";
 import { getNotesByTable, reorderNotes } from "../utils/notesUtils";
@@ -12,16 +13,22 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 const TablesContainer = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   flex-wrap: wrap;
 `;
 
+const CreateContainer = styled.div`
+  display: inline-block;
+  width: 50%;
+  padding: 20px;
+`;
 const DragDropContainer = styled.div`
   display: flex;
   justify-content: space-evenly;
   flex-wrap: wrap;
   width: 100%;
 `;
+
 const reorder = (list, table, startIndex, endIndex) => {
   const result = Array.from(list[table]);
   const [removed] = result.splice(startIndex, 1);
@@ -41,7 +48,7 @@ const reorder = (list, table, startIndex, endIndex) => {
  */
 const move = (source, destination, droppableSource, droppableDestination) => {
   const sourceClone = Array.from(source);
-  const destinationClone = Array.from(destination);
+  const destinationClone = destination ? Array.from(destination) : [];
   const [removed] = sourceClone.splice(droppableSource.index, 1);
   removed.noteTable = droppableDestination.droppableId;
 
@@ -62,16 +69,21 @@ class NotesList extends Component {
     this.state = {
       notes: this.props.notes,
       tables: this.props.tables,
-      isLoading: false
+      isLoading: false,
+      preview: false
     };
   }
 
   componentDidMount() {
     const orderedNotes = reorderNotes(this.state.notes, this.state.tables);
-    console.log(this.state.notes ? "a" : "b");
     this.setState({ notes: orderedNotes });
   }
 
+  addTable = table => {
+    const tables = this.state.tables;
+    tables.push(table);
+    this.setState(tables);
+  };
   /**
    * Updates table notes array and indexes
    * @param {string} tableId ID of the table
@@ -163,6 +175,9 @@ class NotesList extends Component {
                   removeTable={this.removeTable}
                 />
               ))}
+              <CreateContainer>
+                <CreateTable addTable={this.addTable} />
+              </CreateContainer>
             </TablesContainer>
           </DragDropContext>
         ) : null}
