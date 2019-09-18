@@ -78,6 +78,11 @@ export const getTable = async tableId => {
   return await result;
 };
 
+/**
+ * Lists tables
+ *
+ * @return {Array} Tables Array
+ */
 export const listTables = async () => {
   let result;
   try {
@@ -85,5 +90,22 @@ export const listTables = async () => {
   } catch (e) {
     alert(e);
   }
+  return await result;
+};
+
+/**
+ * Deletes table by ID
+ * @param {string} tableId ID of the table
+ *
+ * @return {Promise} Promise response
+ */
+export const deleteTable = async tableId => {
+  let result;
+  try {
+    result = API.del("notes", `/tables/${tableId}`);
+  } catch (e) {
+    alert(e);
+  }
+
   return await result;
 };
