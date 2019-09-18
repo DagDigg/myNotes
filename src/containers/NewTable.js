@@ -1,9 +1,15 @@
 import React, { useState } from "react";
-import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { FormGroup, FormControl } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { createTable } from "../API/tablesAPI";
+import styled from "styled-components";
 
 const NewTable = ({ history }) => {
+  const Label = styled.span`
+    color: ${props => props.theme.colors.secondaryText};
+    float: left;
+    padding: 16px;
+  `;
   const [tableName, setTableName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const validateForm = () => {
@@ -28,7 +34,7 @@ const NewTable = ({ history }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <FormLabel>Choose a table name</FormLabel>
+      <Label>Choose a table name</Label>
       <FormGroup>
         <FormControl
           autoFocus
