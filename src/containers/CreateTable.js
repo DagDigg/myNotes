@@ -4,7 +4,7 @@ import { createTable } from "../API/tablesAPI";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-const CreateTable = ({ setPreview, addTable }) => {
+const CreateTable = ({ addTable }) => {
   const NewTableBtn = styled.div`
     width: 75px;
     height: 75px;
@@ -30,9 +30,8 @@ const CreateTable = ({ setPreview, addTable }) => {
 
   const handleClick = async e => {
     e.preventDefault();
-    const table = await createTable("table");
+    const table = await createTable("Table");
     addTable(table);
-    setPreview(true);
   };
   return (
     <NewTableBtn onClick={handleClick}>
