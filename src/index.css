@@ -12,8 +12,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: auto;
 }
-
+#root {
+  height: 100%;
+  width: 100%;
+}
 h1,
 h2,
 h3,
@@ -49,10 +53,4 @@ input[type="file"] {
 .logo:hover {
   text-decoration: none;
   color: rgb(85, 85, 85);
-}
-
-html,
-body {
-  margin: 0 !important;
-  padding: 0 !important;
 }
