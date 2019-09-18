@@ -5,6 +5,7 @@ import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
 import { getTable, updateTable } from "../API/tablesAPI";
+import { deleteNote, saveNote } from "../API/notesAPI";
 
 export default class Notes extends Component {
   constructor(props) {
@@ -42,16 +43,6 @@ export default class Notes extends Component {
 
   getNote() {
     return API.get("notes", `/notes/${this.props.match.params.id}`);
-  }
-
-  saveNote(note) {
-    return API.put("notes", `/notes/${this.props.match.params.id}`, {
-      body: note
-    });
-  }
-
-  async deleteNote() {
-    return API.del("notes", `/notes/${this.props.match.params.id}`);
   }
 
   async removeAttachment(attachment) {
@@ -108,11 +99,13 @@ export default class Notes extends Component {
         await this.removeAttachment(oldAttachment);
       }
 
-      await this.saveNote({
+      const body = {
         content: this.state.content,
         attachment: attachment || this.state.note.attachment,
         noteTable: this.state.noteTable
-      });
+      };
+
+      await saveNote(body, this.props.match.params.id);
 
       this.props.history.push("/");
     } catch (e) {
@@ -137,7 +130,7 @@ export default class Notes extends Component {
         await this.removeAttachment(this.state.note.attachment);
       }
       await this.removeNoteFromTable();
-      await this.deleteNote();
+      await deleteNote(this.props.match.params.id);
       this.props.history.push("/");
     } catch (e) {
       alert(e);
