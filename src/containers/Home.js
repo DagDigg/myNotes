@@ -50,7 +50,7 @@ const CreateTable = styled.div`
   justify-content: center;
   align-items: center;
   margin-right: 30px;
-  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
   margin-left: auto;
   cursor: pointer;
   &:hover {
