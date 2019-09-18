@@ -16,16 +16,21 @@ export default class NewNote extends Component {
     this.state = {
       isLoading: false,
       content: "",
-      noteTable: "ab3617e0-d55b-11e9-a002-29c83487612b",
+      noteTable: "",
       tables: []
     };
   }
 
   async componentDidMount() {
     //Check if the NewNote page has been clicked or directly accessed
-    const tables = this.props.location.props
-      ? this.props.location.props.tables
-      : await listTables();
+    const tables = await listTables();
+
+    if (!tables.length) {
+      window.alert("You must have at least a table before creating a note");
+      this.props.history.push("/");
+      return;
+    }
+
     //Get first tableId
     const noteTable = tables[0].tableId;
     this.setState({ tables, noteTable });
@@ -98,7 +103,11 @@ export default class NewNote extends Component {
 
   renderTablesOptions() {
     return this.state.tables.map(table => {
-      return <option value={table.tableId}>{table.tableName}</option>;
+      return (
+        <option value={table.tableId} key={table.tableId}>
+          {table.tableName}
+        </option>
+      );
     });
   }
 
