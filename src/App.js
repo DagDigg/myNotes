@@ -10,8 +10,8 @@ import lightTheme from "./themes/light";
 import darkTheme from "./themes/dark";
 
 const Container = styled.div`
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,13 +20,14 @@ const Container = styled.div`
 
 const AppContainer = styled.div`
   text-align: center;
+  min-height: 95vh;
   background-color: ${props => props.theme.colors.appBackground};
   box-shadow: ${props => props.theme.colors.shadowColor};
-  height: 95vh;
+  display: block;
   border-radius: 5px;
   flex: flex-grow;
   width: 75vw;
-  margin: 0;
+  margin: 20px;
   flex-basis: 1;
   padding: 20px;
 `;
