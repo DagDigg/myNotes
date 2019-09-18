@@ -17,18 +17,24 @@ export default ({
 
     justify-content: center;
     margin: 50px auto;
-    border: 2px solid;
+    border: 2px solid ${props => props.theme.colors.buttonColor};
     background-color: transparent;
     border-radius: 10px;
-    transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    color: ${props => props.theme.colors.secondaryText};
+
+    &:disabled {
+      border-color: ${props => props.theme.colors.disabledColor};
+      color: ${props => props.theme.colors.disabledColor};
+    }
 
     &:hover:enabled {
-      background-color: #ff9f1c;
+      background-color: ${props => props.theme.colors.buttonColor};
       color: white;
     }
     &:enabled {
-      border-color: #ff9f1c;
-      color: #ff9d00;
+      border-color: ${props => props.theme.colors.buttonColor};
+      color: ${props => props.theme.colors.secondaryText};
     }
     & div {
       font-size: 18px;
