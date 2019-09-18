@@ -6,14 +6,21 @@ import NotesList from "./NotesList";
 import styled from "styled-components";
 import { getTableIds } from "../utils/tablesUtils";
 import { getGroupedNotes } from "../utils/notesUtils";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import "../Home.css";
 
+const Title = styled.h1`
+  color: ${props => props.theme.colors.primaryText};
+  margin: 0px;
+  line-height: 70px;
+`;
+
 const CreateNote = styled.div`
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  background-color: #ffd16b;
-  border: 1px solid #ff9f1c;
+  border: 2px solid ${props => props.theme.colors.buttonColor};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,22 +28,46 @@ const CreateNote = styled.div`
   cursor: pointer;
 
   & > span {
-    font-size: 44px;
-    font-weight: bolder;
-    color: #555555;
+    font-size: 32px;
+    color: ${props => props.theme.colors.secondaryText};
     transition: color 0.3s;
   }
   &:hover {
-    background-color: #ff9f1c;
+    background-color: ${props => props.theme.colors.buttonColor};
   }
   & > span:hover {
     color: white;
   }
 `;
 
+const CreateTable = styled.div`
+  width: 140px;
+  height: 40px;
+  border-radius: 10px;
+  border: 2px solid ${props => props.theme.colors.buttonColor};
+  color: ${props => props.theme.colors.secondaryText};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 30px;
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+  margin-left: auto;
+  cursor: pointer;
+  &:hover {
+    background-color: ${props => props.theme.colors.buttonColor};
+    color: white;
+  }
+  & h5 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+`;
+
 const NotesHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 25px 16px;
 `;
 
@@ -88,7 +119,13 @@ export default class Home extends Component {
 
   //Renders NotesList.js Component. Called inside renderNotes()
   renderNotesList(notes, tables) {
-    return <NotesList notes={notes} tables={tables} />;
+    return (
+      <NotesList
+        notes={notes}
+        tables={tables}
+        isLoading={this.state.isLoading}
+      />
+    );
   }
 
   //Renders NotesList component and NewNote component
@@ -96,8 +133,23 @@ export default class Home extends Component {
     return (
       <div className="notes">
         <NotesHeader>
-          <h1 style={{ marginBottom: "0px", lineHeight: "70px" }}>Notes</h1>
+          <Title>Notes</Title>
 
+          {/*Create Table Button*/}
+          <LinkContainer
+            to={{
+              pathname: "/tables/new",
+              props: {
+                tables: this.state.tables
+              }
+            }}
+          >
+            <CreateTable>
+              <h5>Create Table</h5>
+            </CreateTable>
+          </LinkContainer>
+
+          {/*Create Note Button*/}
           <LinkContainer
             to={{
               pathname: "/notes/new",
@@ -112,19 +164,12 @@ export default class Home extends Component {
           </LinkContainer>
         </NotesHeader>
 
-        <LinkContainer
-          to={{
-            pathname: "/tables/new",
-            props: {
-              tables: this.state.tables
-            }
-          }}
-        >
-          <h5>Create Table</h5>
-        </LinkContainer>
         <NoteContainer>
-          {!this.state.isLoading &&
-            this.renderNotesList(this.state.notes, this.state.tables)}
+          {!this.state.isLoading ? (
+            this.renderNotesList(this.state.notes, this.state.tables)
+          ) : (
+            <FontAwesomeIcon icon={faSpinner} size="5x" spin />
+          )}
         </NoteContainer>
       </div>
     );
