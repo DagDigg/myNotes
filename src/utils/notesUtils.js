@@ -36,6 +36,9 @@ export const reorderNotes = (notes, tables) => {
   const orderedNotes = {};
 
   tables.forEach(table => {
+    if (!table.notes) {
+      return;
+    }
     const tableId = table.tableId;
     orderedNotes[tableId] = [];
 
