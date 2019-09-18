@@ -6,7 +6,7 @@ body {
   color: #333;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #444b6e;
+  background-color: rgb(85, 85, 85, 0);
   height: 100%;
   width: 100%;
   display: flex;
@@ -49,4 +49,10 @@ input[type="file"] {
 .logo:hover {
   text-decoration: none;
   color: rgb(85, 85, 85);
+}
+
+html,
+body {
+  margin: 0 !important;
+  padding: 0 !important;
 }
