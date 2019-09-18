@@ -7,6 +7,7 @@ export default {
     shadowColor: "none",
     cardBackground: "#393e46",
     noteColor: "#eeeeee",
-    buttonColor: "#fd7014"
+    buttonColor: "#fd7014",
+    disabledColor: "#6d6d6d"
   }
 };
