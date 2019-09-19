@@ -1,11 +1,75 @@
 import React, { Component } from "react";
-import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { API } from "aws-amplify";
 import config from "../config";
 import { s3Upload } from "../libs/awsLib";
 import { updateTable, listTables } from "../API/tablesAPI";
 import { getTableName } from "../utils/tablesUtils";
+import styled from "styled-components";
+
+const Group = styled.div`
+  width: 100%;
+  padding: 0 20px;
+  margin: 20px 0;
+`;
+
+const Label = styled.h3`
+  text-align: left;
+  margin-bottom: 20px;
+`;
+
+const InputText = styled.textarea`
+  resize: vertical;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 50px;
+  border-radius: 10px;
+  min-height: 100px;
+  border: none;
+  outline: none;
+  box-shadow: none;
+`;
+
+const InputFile = styled.input`
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+`;
+
+const LabelFile = styled.label`
+  font-size: 1.25em;
+  display: block;
+  width: 140px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border: 2px solid ${props => props.theme.colors.buttonColor};
+  color: ${props => props.theme.colors.primaryText};
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  &:focus,
+  &:hover {
+    background-color: ${props => props.theme.colors.buttonColor};
+    color: white;
+  }
+`;
+
+const FileText = styled.p`
+  font-size: 16px;
+  text-align: left;
+`;
+
+const Select = styled.select`
+  float: left;
+  width: 100px;
+  height: 40px;
+  outline: none;
+  border-radius: 10px;
+  color: ${props => props.theme.colors.primaryText};
+`;
 
 export default class NewNote extends Component {
   constructor(props) {
@@ -17,7 +81,8 @@ export default class NewNote extends Component {
       isLoading: false,
       content: "",
       noteTable: "",
-      tables: []
+      tables: [],
+      fileName: ""
     };
   }
 
@@ -48,6 +113,9 @@ export default class NewNote extends Component {
 
   handleFileChange = e => {
     this.file = e.target.files[0];
+    const fileName = e.target.files[0].name;
+
+    this.setState({ fileName });
   };
 
   handleSubmit = async e => {
@@ -113,35 +181,47 @@ export default class NewNote extends Component {
 
   render() {
     return (
-      <div className="NewNote">
+      <div>
         <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="content">
-            <FormControl
+          <Group id="content">
+            <Label>Note content</Label>
+            <InputText
+              id="content"
               autoFocus
               autoComplete="off"
-              type="textarea"
               value={this.state.content}
               onChange={this.handleChange}
             />
-          </FormGroup>
-          <FormGroup controlId="file">
-            <FormLabel>Attachment:</FormLabel>
-            <FormControl type="file" onChange={this.handleFileChange} />
-          </FormGroup>
-          <FormGroup controlId="noteTable">
-            <FormLabel>Table:</FormLabel>
-            <FormControl as="select" onChange={this.handleChange}>
+          </Group>
+          <Group id="file">
+            <Label>Attachment:</Label>
+            <InputFile
+              type="file"
+              name="file-select"
+              id="file-select"
+              onChange={this.handleFileChange}
+            />
+            <LabelFile for="file-select">Choose a file</LabelFile>
+            {this.state.fileName && (
+              <FileText> {this.state.fileName} </FileText>
+            )}
+          </Group>
+          <Group id="noteTable">
+            <Label>Table:</Label>
+            <Select id="noteTable" onChange={this.handleChange}>
               {this.renderTablesOptions()}
-            </FormControl>
-          </FormGroup>
-          <LoaderButton
-            block
-            type="submit"
-            text="Create note"
-            disabled={!this.validateForm()}
-            loadingText="Creating note..."
-            isLoading={this.state.isLoading}
-          />
+            </Select>
+          </Group>
+          <Group>
+            <LoaderButton
+              block
+              type="submit"
+              text="Create note"
+              disabled={!this.validateForm()}
+              loadingText="Creating note..."
+              isLoading={this.state.isLoading}
+            />
+          </Group>
         </form>
       </div>
     );
