@@ -6,6 +6,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.21",
     "@fortawesome/free-solid-svg-icons": "^5.10.1",
     "@fortawesome/react-fontawesome": "^0.1.4",
+    "@svgr/cli": "^4.3.2",
     "aws-amplify": "^1.1.36",
     "react": "^16.9.0",
     "react-beautiful-dnd": "^11.0.5",
