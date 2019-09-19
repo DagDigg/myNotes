@@ -20,6 +20,7 @@ const Container = styled.div`
 
 const AppContainer = styled.div`
   text-align: center;
+  overflow: hidden;
   min-height: 95vh;
   background-color: ${props => props.theme.colors.appBackground};
   box-shadow: ${props => props.theme.colors.shadowColor};
@@ -83,7 +84,7 @@ class App extends Component {
 
     return (
       !this.state.isAuthenticating && (
-        <ThemeProvider theme={darkTheme}>
+        <ThemeProvider theme={lightTheme}>
           <Container>
             <AppContainer>
               <Navbar fluid="true" collapseOnSelect className="nav">
