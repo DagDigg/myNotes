@@ -12,6 +12,10 @@ import LandingPage from "./LandingPage";
 
 import "../Home.css";
 
+const HomeContainer = styled.div`
+  height: 100%;
+`;
+
 const Title = styled.h1`
   color: ${props => props.theme.colors.primaryText};
   margin: 0px;
@@ -169,9 +173,9 @@ export default class Home extends Component {
 
   render() {
     return (
-      <div className="Home">
+      <HomeContainer>
         {this.props.isAuthenticated ? this.renderNotes() : <LandingPage />}
-      </div>
+      </HomeContainer>
     );
   }
 }
