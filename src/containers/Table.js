@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { LinkContainer } from "react-router-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,8 +6,29 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import { deleteTable } from "../API/tablesAPI";
 import { deleteNote } from "../API/notesAPI";
 import styled from "styled-components";
+import Title from "./Title";
 
 const Table = ({ tableName, tableId, notes, removeTable }) => {
+  const [title, setTitle] = useState(tableName);
+
+  const TableContainer = styled.div`
+    display: inline-block;
+    background-color: ${props => props.theme.colors.cardBackground};
+    box-shadow: ${props => props.theme.colors.shadowColor};
+    min-width: 400px;
+    min-height: 270px;
+    flex-grow: 1;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 20px;
+    & h4 {
+      padding: 0;
+      margin: 0;
+      text-align: left;
+      color: ${props => props.theme.colors.primaryText};
+    }
+  `;
+
   const HeaderContainer = styled.div`
     display: flex;
     justify-content: space-between;
@@ -59,24 +80,9 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
     align-items: center;
   `;
 
-  const TableContainer = styled.div`
-    display: inline-block;
-    background-color: ${props => props.theme.colors.cardBackground};
-    box-shadow: ${props => props.theme.colors.shadowColor};
-    min-width: 270px;
-    min-height: 220px;
-    max-width: 50%;
-    flex-grow: 1;
-    border-radius: 10px;
-    margin: 10px;
-    padding: 20px;
-    & h4 {
-      padding: 0;
-      margin: 0;
-      text-align: left;
-      color: ${props => props.theme.colors.primaryText};
-    }
-  `;
+  const updateTitle = newTitle => {
+    setTitle(newTitle);
+  };
 
   const asyncForEach = async (array, callback) => {
     if (!array) {
@@ -106,7 +112,7 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
   const getItemStyle = (isDragging, draggableStyle) => ({
     // change background colour and scale if dragging
     //background: isDragging ? "#FFD16B" : "#fff0d6",
-    transform: `scale(${isDragging ? 1.1 : 1})`
+    //transform: `scale(${isDragging ? 1.1 : 1})`
   });
 
   const renderNote = (note, isDragging) => (
@@ -120,11 +126,17 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
 
   return (
     <>
-      <Droppable droppableId={tableId} key={tableName}>
+      <Droppable droppableId={tableId} key={tableId}>
         {(provided, snapshot) => (
           <TableContainer {...provided.droppableProps} ref={provided.innerRef}>
-            <HeaderContainer>
-              <h4>{tableName}</h4>
+            <HeaderContainer key={tableId}>
+              <Title
+                value={title}
+                updateTitle={updateTitle}
+                tableId={tableId}
+                notes={notes}
+              ></Title>
+
               <DeleteButton onClick={() => handleDelete(tableId, notes)}>
                 <FontAwesomeIcon
                   icon={faTimes}
