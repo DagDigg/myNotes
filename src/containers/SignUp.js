@@ -1,14 +1,9 @@
 import React, { Component } from "react";
-import {
-  FormText,
-  FormGroup,
-  FormControl,
-  FormLabel,
-  Alert
-} from "react-bootstrap";
+import { FormText, FormGroup, FormControl, Alert } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import "./SignUp.css";
+import { AuthContainer, Label } from "../components/StyledAuthentication";
 import { Auth } from "aws-amplify";
+import { postInitialTable } from "../API/tablesAPI";
 
 export default class SignUp extends Component {
   constructor(props) {
@@ -109,6 +104,7 @@ export default class SignUp extends Component {
     try {
       await Auth.confirmSignUp(this.state.email, this.state.confirmationCode);
       await Auth.signIn(this.state.email, this.state.password);
+      await postInitialTable();
 
       this.props.userHasAuthenticated(true);
       this.props.history.push("/");
@@ -120,83 +116,88 @@ export default class SignUp extends Component {
 
   renderConfirmationForm() {
     return (
-      <form onSubmit={this.handleConfirmationSubmit}>
-        <FormGroup controlId="confirmationCode">
-          <FormLabel>Confirmation code:</FormLabel>
-          <FormControl
-            autoFocus
-            type="tel"
-            value={this.state.confirmationCode}
-            onChange={this.handleChange}
+      <AuthContainer>
+        <form onSubmit={this.handleConfirmationSubmit}>
+          <FormGroup controlId="confirmationCode">
+            <Label>Confirmation code:</Label>
+            <FormControl
+              autoFocus
+              type="tel"
+              value={this.state.confirmationCode}
+              onChange={this.handleChange}
+            />
+            <FormText className="text-muted">
+              Please check your email and paste the received code
+            </FormText>
+          </FormGroup>
+          <LoaderButton
+            block
+            text="Verify"
+            disabled={!this.validateConfirmationForm()}
+            type="submit"
+            isLoading={this.state.isLoading}
+            loadingText="Verifying..."
           />
-          <FormText className="text-muted">
-            Please check your email and paste the received code
-          </FormText>
-        </FormGroup>
-        <LoaderButton
-          block
-          text="Verify"
-          disabled={!this.validateConfirmationForm()}
-          type="submit"
-          isLoading={this.state.isLoading}
-          loadingText="Verifying..."
-        />
-      </form>
+        </form>
+      </AuthContainer>
     );
   }
 
   renderForm() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <FormGroup controlId="email">
-          <FormLabel>Email</FormLabel>
-          <FormControl
-            autoFocus
-            type="email"
-            value={this.state.email}
-            onChange={this.handleChange}
+      <AuthContainer>
+        <form onSubmit={this.handleSubmit}>
+          <FormGroup controlId="email">
+            <Label>Email</Label>
+            <FormControl
+              autoFocus
+              type="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+          <FormGroup controlId="password">
+            <Label>Password:</Label>
+            <FormControl
+              type="password"
+              value={this.state.password}
+              onChange={this.handlePasswordChange}
+            />
+            {!this.state.isValidPassword ? (
+              <Alert variant="warning" style={{ margin: "20px 0" }}>
+                Password should contain 8 characters, at least one uppercase
+                letter, one lowercase letter, one number and one special
+                character
+              </Alert>
+            ) : null}
+          </FormGroup>
+          <FormGroup controlId="confirmPassword">
+            <Label>Confirm password:</Label>
+            <FormControl
+              type="password"
+              value={this.state.confirmPassword}
+              onChange={this.handlePasswordChange}
+            />
+            {!this.state.isValidConfirmPassword ? (
+              <Alert variant="warning">Passwords should match</Alert>
+            ) : null}
+          </FormGroup>
+          <LoaderButton
+            block
+            type="submit"
+            disabled={!this.validateForm()}
+            isLoading={this.state.isLoading}
+            text="Signup"
+            loadingText="Signing up..."
           />
-        </FormGroup>
-        <FormGroup controlId="password">
-          <FormLabel>Password:</FormLabel>
-          <FormControl
-            type="password"
-            value={this.state.password}
-            onChange={this.handlePasswordChange}
-          />
-          {!this.state.isValidPassword ? (
-            <Alert variant="warning">
-              Password should contain 8 characters, at least one uppercase
-              letter, one lowercase letter, one number and one special character
-            </Alert>
-          ) : null}
-        </FormGroup>
-        <FormGroup controlId="confirmPassword">
-          <FormLabel>Confirm password:</FormLabel>
-          <FormControl
-            type="password"
-            value={this.state.confirmPassword}
-            onChange={this.handlePasswordChange}
-          />
-          {!this.state.isValidConfirmPassword ? (
-            <Alert variant="warning">Passwords should match</Alert>
-          ) : null}
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          disabled={!this.validateForm()}
-          isLoading={this.state.isLoading}
-          text="Signup"
-          loadingText="Signing up..."
-        />
-      </form>
+        </form>
+      </AuthContainer>
     );
   }
 
   render() {
     return (
-      <div className="SignUp">
+      <div>
         {this.state.newUser === null
           ? this.renderForm()
           : this.renderConfirmationForm()}
