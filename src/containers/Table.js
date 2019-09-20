@@ -8,13 +8,13 @@ import { deleteNote } from "../API/notesAPI";
 import styled from "styled-components";
 import Title from "./Title";
 
-const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
+const Table = ({ tableName, tableId, notes, removeTable }) => {
   const [title, setTitle] = useState(tableName);
 
   const TableContainer = styled.div`
     display: inline-block;
     background-color: ${props => props.theme.colors.cardBackground};
-    box-shadow: ${props => props.theme.colors.shadowColor};
+    box-shadow: 0px 0px 5px -1px ${props => props.theme.colors.shadowColor};
     width: 400px;
     min-height: 270px;
     flex-grow: 1;
@@ -30,7 +30,7 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
   `;
 
   const NotesContainer = styled.div`
-    height: 100%;
+    min-height: 70%;
     width: 100%;
   `;
 
@@ -50,6 +50,21 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
     padding: 0;
     margin: 0;
     width: 100%;
+    transition: transform 0.3s ease-in-out;
+  `;
+
+  const NoteCard = styled.div`
+    background-color: ${props => props.theme.colors.noteColor};
+    position: relative;
+    text-align: center;
+    width: 100%;
+    height: 60px;
+    border-radius: 15px;
+    border: 1px solid transparent;
+    transition: border 0.1s ease-in-out;
+    &:hover {
+      border: 1px solid ${props => props.theme.colors.secondaryText};
+    }
   `;
 
   const DeleteButton = styled.div`
@@ -77,15 +92,6 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
     }
   `;
 
-  const NoteCard = styled.div`
-    background-color: ${props => props.theme.colors.noteColor};
-    position: relative;
-    text-align: center;
-    width: 100%;
-    height: 60px;
-    border-radius: 15px;
-  `;
-
   const TextContainer = styled.div`
     display: flex;
     justify-content: center;
@@ -106,10 +112,19 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
     right: 10px;
   `;
 
+  /**
+   * Updates table title
+   * @param {string} newTitle New table title
+   */
   const updateTitle = newTitle => {
     setTitle(newTitle);
   };
 
+  /**
+   * Helper forEach with async/await
+   * @param {Array} array Array to be iterated
+   * @param {Function} callback Callback async function
+   */
   const asyncForEach = async (array, callback) => {
     if (!array) {
       return;
@@ -119,6 +134,11 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
     }
   };
 
+  /**
+   * Deletes a table and its corresponding notes
+   * @param {string} tableId ID of the table
+   * @param {Array} notes Notes Object of the table to be deleted
+   */
   const handleDelete = async (tableId, notes) => {
     const confirmed = window.confirm(
       "Are you sure you want to delete this table?"
@@ -135,11 +155,19 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
     removeTable(tableId);
   };
 
-  const getItemStyle = (isDragging, draggableProps) => ({
+  /**
+   * Changes style to dragging note
+   * @param {Boolean} isDragging Boolean value
+   */
+  const getItemStyle = isDragging => ({
     //transform: `scale(${isDragging ? 1.1 : 1})`
-    //...draggableProps
+    boxShadow: isDragging ? "0px 0px 5px -1px #0a0a0a" : "none"
   });
 
+  /**
+   * Trims the note content to be displayed if too long
+   * @param {string} text Note content
+   */
   const formatText = text => {
     if (text.length > 40) {
       return text.substring(0, 40);
@@ -148,12 +176,14 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
     }
   };
 
-  const renderNote = (note, isDragging, draggableProps) => (
+  /**
+   * Note Card render function
+   * @param {Object} note Note Object
+   * @param {Boolean} isDragging Boolean value
+   */
+  const renderNote = (note, isDragging) => (
     <NoteContainer>
-      <NoteLink
-        to={`/notes/${note.noteId}`}
-        style={getItemStyle(isDragging, draggableProps)}
-      >
+      <NoteLink to={`/notes/${note.noteId}`} style={getItemStyle(isDragging)}>
         <NoteCard>
           <TextContainer>
             <NoteText>{formatText(note.content)}</NoteText>
@@ -167,8 +197,8 @@ const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
 
   return (
     <>
-      <TableContainer>
-        <HeaderContainer key={tableId}>
+      <TableContainer key={tableId}>
+        <HeaderContainer>
           <Title
             value={title}
             updateTitle={updateTitle}
