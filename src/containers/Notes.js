@@ -1,11 +1,26 @@
 import React, { Component } from "react";
 import { API, Storage } from "aws-amplify";
 import config from "../config";
-import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
 import { getTable, updateTable } from "../API/tablesAPI";
 import { deleteNote, saveNote } from "../API/notesAPI";
+import styled from "styled-components";
+import {
+  Group,
+  Label,
+  InputText,
+  InputFile,
+  LabelFile,
+  FileText
+} from "../components/StyledNote";
+
+const ButtonsContainer = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
 
 export default class Notes extends Component {
   constructor(props) {
@@ -20,7 +35,8 @@ export default class Notes extends Component {
       content: "",
       attachmentURL: null,
       noteIndex: null,
-      noteTable: null
+      noteTable: null,
+      fileName: ""
     };
   }
 
@@ -77,6 +93,8 @@ export default class Notes extends Component {
 
   handleFileChange = e => {
     this.file = e.target.files[0];
+    const fileName = e.target.files[0].name;
+    this.setState({ fileName });
   };
 
   handleSubmit = async e => {
@@ -145,18 +163,19 @@ export default class Notes extends Component {
       <div className="Notes">
         {this.state.note && (
           <form onSubmit={this.handleSubmit}>
-            <FormGroup controlId="content">
-              <FormControl
-                type="textarea"
+            <Group id="content">
+              <Label>Edit note</Label>
+              <InputText
+                id="content"
                 value={this.state.content}
                 onChange={this.handleChange}
               />
-            </FormGroup>
+            </Group>
 
             {this.state.note.attachment && (
-              <FormGroup>
-                <FormLabel>Attachment:</FormLabel>
-                <div>
+              <Group>
+                <Label>Attachment:</Label>
+                <div style={{ textAlign: "left" }}>
                   <a
                     href={this.state.attachmentURL}
                     target="_blank"
@@ -165,31 +184,42 @@ export default class Notes extends Component {
                     {this.formatFileName(this.state.note.attachment)}
                   </a>
                 </div>
-              </FormGroup>
+              </Group>
             )}
 
-            <FormGroup controlId="file">
-              {!this.state.note.attachment && (
-                <FormLabel>Attachment:</FormLabel>
+            <Group id="file">
+              {!this.state.note.attachment && <Label>Attachment:</Label>}
+              <InputFile
+                type="file"
+                name="file-select"
+                id="file-select"
+                onChange={this.handleFileChange}
+              />
+              <LabelFile htmlFor="file-select">Choose a file</LabelFile>
+              {this.state.fileName && (
+                <FileText>{this.state.fileName}</FileText>
               )}
-              <FormControl type="file" onChange={this.handleFileChange} />
-            </FormGroup>
+            </Group>
 
-            <LoaderButton
-              block
-              text="Save"
-              loadingText="Saving..."
-              type="submit"
-              isLoading={this.state.isLoading}
-              disabled={!this.validateForm()}
-            />
-            <LoaderButton
-              block
-              text="Delete"
-              loadingText="Deleting..."
-              isLoading={this.state.isDeleting}
-              onClick={this.handleDelete}
-            />
+            <ButtonsContainer>
+              <LoaderButton
+                block
+                text="Save"
+                loadingText="Saving..."
+                type="submit"
+                colorType="#20d420"
+                isLoading={this.state.isLoading}
+                disabled={!this.validateForm()}
+              />
+              <LoaderButton
+                block
+                text="Delete"
+                loadingText="Deleting..."
+                colorType="red"
+                isLoading={this.state.isDeleting}
+                onClick={this.handleDelete}
+              />
+            </ButtonsContainer>
           </form>
         )}
       </div>
