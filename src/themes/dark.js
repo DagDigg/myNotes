@@ -4,7 +4,7 @@ export default {
     appBackground: "#222831",
     primaryText: "#ff5722",
     secondaryText: "#fd7014",
-    shadowColor: "none",
+    shadowColor: "0a0a0a",
     cardBackground: "#393e46",
     noteColor: "#eeeeee",
     draggingColor: "#DBDBDB",
