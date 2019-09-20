@@ -29,7 +29,8 @@ const LandingPage = () => {
   const getIllustrationStyle = () => {
     return {
       position: "absolute",
-      left: "165px"
+      left: "200px",
+      top: "150px"
     };
   };
   return (
