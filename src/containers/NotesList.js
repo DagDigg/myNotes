@@ -79,11 +79,16 @@ class NotesList extends Component {
     this.setState({ notes: orderedNotes });
   }
 
+  /**
+   * Adds a table to the state tables on plus click
+   * @param {Object} table Table Object
+   */
   addTable = table => {
     const tables = this.state.tables;
     tables.push(table);
     this.setState(tables);
   };
+
   /**
    * Updates table notes array and indexes
    * @param {string} tableId ID of the table
@@ -102,6 +107,10 @@ class NotesList extends Component {
     return await updateTable(tableId, tableName, newNotes);
   };
 
+  /**
+   * Removes a table from state tables
+   * @param {string} tableId ID of the table
+   */
   removeTable = tableId => {
     const newTables = this.state.tables.filter(table => {
       return table.tableId !== tableId;
@@ -111,15 +120,15 @@ class NotesList extends Component {
   };
 
   onDragEnd = async result => {
-    const { source, destination } = result;
-    const { notes } = this.state;
-    const sourceTableId = source.droppableId;
-    const destinationTableId = destination.droppableId;
-
     //Dropped out of the list
     if (!result.destination) {
       return;
     }
+
+    const { source, destination } = result;
+    const { notes } = this.state;
+    const sourceTableId = source.droppableId;
+    const destinationTableId = destination.droppableId;
 
     //If the swap occurs on the same table
     if (
