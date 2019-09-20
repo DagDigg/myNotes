@@ -3,7 +3,7 @@ import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { Auth } from "aws-amplify";
 import { Redirect } from "react-router-dom";
-import "./Login.css";
+import { AuthContainer, Label } from "../components/StyledAuthentication";
 
 export default class Login extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ export default class Login extends Component {
 
   render() {
     return (
-      <div className="Login">
+      <AuthContainer>
         {this.state.errDescription ? (
           <Redirect
             to={{
@@ -53,7 +53,7 @@ export default class Login extends Component {
         ) : (
           <form onSubmit={this.handleSubmit}>
             <FormGroup controlId="email">
-              <FormLabel className="label">Email</FormLabel>
+              <Label>Email</Label>
               <FormControl
                 autoFocus
                 type="email"
@@ -63,7 +63,7 @@ export default class Login extends Component {
               />
             </FormGroup>
             <FormGroup controlId="password">
-              <FormLabel className="label">Password</FormLabel>
+              <Label>Password</Label>
               <FormControl
                 type="password"
                 placeholder="Enter password"
@@ -81,7 +81,7 @@ export default class Login extends Component {
             />
           </form>
         )}
-      </div>
+      </AuthContainer>
     );
   }
 }
