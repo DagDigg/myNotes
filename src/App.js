@@ -23,7 +23,7 @@ const AppContainer = styled.div`
   overflow: hidden;
   min-height: 95vh;
   background-color: ${props => props.theme.colors.appBackground};
-  box-shadow: ${props => props.theme.colors.shadowColor};
+  box-shadow: 0px 0px 5px -1px ${props => props.theme.colors.shadowColor};
   display: block;
   border-radius: 5px;
   flex: flex-grow;
