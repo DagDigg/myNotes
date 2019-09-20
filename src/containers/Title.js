@@ -6,10 +6,17 @@ const Header = styled.textarea`
   font-family: "Nunito", sans-serif;
   font-weight: 700;
   font-size: 32px;
+  padding-left: 5px;
   color: ${props => props.theme.colors.secondaryText};
   background-color: transparent;
   resize: none;
-  border: none;
+  border: 1px solid transparent;
+  transition: background-color 0.3s ease-in-out;
+
+  &:hover {
+    border: 1px solid ${props => props.theme.colors.noteColor};
+    background-color: ${props => props.theme.colors.appBackground};
+  }
 `;
 
 class Title extends Component {
