@@ -8,14 +8,14 @@ import { deleteNote } from "../API/notesAPI";
 import styled from "styled-components";
 import Title from "./Title";
 
-const Table = ({ tableName, tableId, notes, removeTable }) => {
+const Table = ({ tableName, tableId, notes, removeTable, theme }) => {
   const [title, setTitle] = useState(tableName);
 
   const TableContainer = styled.div`
     display: inline-block;
     background-color: ${props => props.theme.colors.cardBackground};
     box-shadow: ${props => props.theme.colors.shadowColor};
-    min-width: 400px;
+    width: 400px;
     min-height: 270px;
     flex-grow: 1;
     border-radius: 10px;
@@ -29,6 +29,11 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
     }
   `;
 
+  const NotesContainer = styled.div`
+    height: 100%;
+    width: 100%;
+  `;
+
   const HeaderContainer = styled.div`
     display: flex;
     justify-content: space-between;
@@ -36,12 +41,15 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
     margin-bottom: 20px;
   `;
 
-  const NoteContainerLink = styled(LinkContainer)`
-    user-select: none;
+  const NoteContainer = styled.div`
+    height: auto;
+    padding: 15px 0;
+  `;
+
+  const NoteLink = styled(LinkContainer)`
     padding: 0;
     margin: 0;
     width: 100%;
-    transition: transform 0.2s linear;
   `;
 
   const DeleteButton = styled.div`
@@ -71,13 +79,31 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
 
   const NoteCard = styled.div`
     background-color: ${props => props.theme.colors.noteColor};
+    position: relative;
+    text-align: center;
     width: 100%;
     height: 60px;
-    margin-bottom: 20px;
     border-radius: 15px;
+  `;
+
+  const TextContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    line-height: 50px;
+  `;
+
+  const NoteText = styled.p`
+    font-size: 18px;
+    display: block;
+    margin: 0;
+  `;
+
+  const NoteDate = styled.span`
+    font-size: 12px;
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
   `;
 
   const updateTitle = newTitle => {
@@ -95,13 +121,13 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
 
   const handleDelete = async (tableId, notes) => {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this note?"
+      "Are you sure you want to delete this table?"
     );
 
     if (!confirmed) {
       return;
     }
-
+    console.log(tableId);
     await deleteTable(tableId);
     asyncForEach(notes, async note => {
       await deleteNote(note.noteId);
@@ -109,67 +135,90 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
     removeTable(tableId);
   };
 
-  const getItemStyle = (isDragging, draggableStyle) => ({
-    // change background colour and scale if dragging
-    //background: isDragging ? "#FFD16B" : "#fff0d6",
+  const getItemStyle = (isDragging, draggableProps) => ({
     //transform: `scale(${isDragging ? 1.1 : 1})`
+    //...draggableProps
   });
 
-  const renderNote = (note, isDragging) => (
-    <NoteContainerLink
-      to={`/notes/${note.noteId}`}
-      style={getItemStyle(isDragging)}
-    >
-      <NoteCard>{note.content}</NoteCard>
-    </NoteContainerLink>
+  const formatText = text => {
+    if (text.length > 40) {
+      return text.substring(0, 40);
+    } else {
+      return text;
+    }
+  };
+
+  const renderNote = (note, isDragging, draggableProps) => (
+    <NoteContainer>
+      <NoteLink
+        to={`/notes/${note.noteId}`}
+        style={getItemStyle(isDragging, draggableProps)}
+      >
+        <NoteCard>
+          <TextContainer>
+            <NoteText>{formatText(note.content)}</NoteText>
+          </TextContainer>
+
+          <NoteDate>{new Date(note.createdAt).toLocaleString()}</NoteDate>
+        </NoteCard>
+      </NoteLink>
+    </NoteContainer>
   );
 
   return (
     <>
-      <Droppable droppableId={tableId} key={tableId}>
-        {(provided, snapshot) => (
-          <TableContainer {...provided.droppableProps} ref={provided.innerRef}>
-            <HeaderContainer key={tableId}>
-              <Title
-                value={title}
-                updateTitle={updateTitle}
-                tableId={tableId}
-                notes={notes}
-              ></Title>
+      <TableContainer>
+        <HeaderContainer key={tableId}>
+          <Title
+            value={title}
+            updateTitle={updateTitle}
+            tableId={tableId}
+            notes={notes}
+          ></Title>
 
-              <DeleteButton onClick={() => handleDelete(tableId, notes)}>
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  size="sm"
-                  style={{ display: "inline-block", width: "100%" }}
-                />
-              </DeleteButton>
-            </HeaderContainer>
-
-            {notes &&
-              notes.map((note, index) => {
-                return (
-                  <Draggable
-                    key={note.noteId}
-                    draggableId={note.noteId}
-                    index={index}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        {renderNote(note, snapshot.isDragging)}
-                      </div>
-                    )}
-                  </Draggable>
-                );
-              })}
-            {provided.placeholder}
-          </TableContainer>
-        )}
-      </Droppable>
+          <DeleteButton onClick={() => handleDelete(tableId, notes)}>
+            <FontAwesomeIcon
+              icon={faTimes}
+              size="sm"
+              style={{ display: "inline-block", width: "100%" }}
+            />
+          </DeleteButton>
+        </HeaderContainer>
+        <Droppable droppableId={tableId} key={tableId}>
+          {(provided, snapshot) => (
+            <NotesContainer
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {notes &&
+                notes.map((note, index) => {
+                  return (
+                    <Draggable
+                      key={note.noteId}
+                      draggableId={note.noteId}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          {renderNote(
+                            note,
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                          )}
+                        </div>
+                      )}
+                    </Draggable>
+                  );
+                })}
+              {provided.placeholder}
+            </NotesContainer>
+          )}
+        </Droppable>
+      </TableContainer>
     </>
   );
 };
