@@ -6,7 +6,7 @@ const Header = styled.textarea`
   font-family: "Nunito", sans-serif;
   font-weight: 700;
   font-size: 32px;
-  color: ${props => props.theme.colors.primaryText};
+  color: ${props => props.theme.colors.secondaryText};
   background-color: transparent;
   resize: none;
   border: none;
