@@ -37,7 +37,53 @@ const Logo = styled.span`
   font-family: "Nunito", sans-serif;
   font-weight: 700;
   text-decoration: none;
-  color: ${props => props.theme.colors.secondaryText};
+  color: ${props => props.theme.colors.primaryText};
+`;
+
+const Switch = styled.label`
+  position: relative;
+  display: inline-block;
+  margin: 0 20px;
+  width: 60px;
+  height: 34px;
+`;
+
+const Slider = styled.span`
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: ${props => props.theme.colors.buttonColor};
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  border-radius: 34px;
+  &::before {
+    border-radius: 50%;
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+  }
+`;
+
+const CheckBox = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+
+  &:focus + ${Slider} {
+    box-shadow: 0 0 1px #2196f3;
+  }
+
+  &:checked + ${Slider}::before {
+    transform: translateX(26px);
+  }
 `;
 
 const AuthenticationBtn = styled.span`
@@ -51,7 +97,8 @@ class App extends Component {
 
     this.state = {
       isAuthenticated: false,
-      isAuthenticating: true
+      isAuthenticating: true,
+      darkMode: false
     };
   }
   async componentDidMount() {
@@ -66,6 +113,7 @@ class App extends Component {
 
     this.setState({ isAuthenticating: false });
   }
+
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated });
   };
@@ -76,6 +124,9 @@ class App extends Component {
     this.props.history.push("/login");
   };
 
+  toggleDarkMode = () => {
+    this.setState({ darkMode: !this.state.darkMode });
+  };
   render() {
     const childProps = {
       isAuthenticated: this.state.isAuthenticated,
@@ -84,7 +135,7 @@ class App extends Component {
 
     return (
       !this.state.isAuthenticating && (
-        <ThemeProvider theme={lightTheme}>
+        <ThemeProvider theme={this.state.darkMode ? darkTheme : lightTheme}>
           <Container>
             <AppContainer>
               <Navbar fluid="true" collapseOnSelect className="nav">
@@ -95,6 +146,10 @@ class App extends Component {
                 </Navbar.Brand>
                 <Navbar.Toggle />
                 <Navbar.Collapse className="justify-content-end">
+                  <Switch>
+                    <CheckBox type="checkbox" onClick={this.toggleDarkMode} />
+                    <Slider />
+                  </Switch>
                   <Nav>
                     {this.state.isAuthenticated ? (
                       <Nav.Link onClick={this.handleLogout}>
