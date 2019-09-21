@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import LoaderButton from "../components/LoaderButton";
-import { API } from "aws-amplify";
 import config from "../config";
 import { s3Upload } from "../libs/awsLib";
 import { updateTable, listTables } from "../API/tablesAPI";
 import { getTableName } from "../utils/tablesUtils";
 import styled from "styled-components";
+import { createNote } from "../API/notesAPI";
+
 import {
   Group,
   Label,
@@ -87,7 +88,7 @@ export default class NewNote extends Component {
       const uuid = require("uuid/v1");
       const noteId = uuid();
 
-      await this.createNote({
+      await createNote({
         noteId: noteId,
         attachment,
         content: this.state.content,
@@ -102,12 +103,6 @@ export default class NewNote extends Component {
       this.setState({ isLoading: false });
     }
   };
-
-  createNote(note) {
-    return API.post("notes", "/notes", {
-      body: note
-    });
-  }
 
   addNoteToTable = async noteId => {
     const tableObj = this.state.tables.find(table => {
