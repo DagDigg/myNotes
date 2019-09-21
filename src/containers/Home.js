@@ -10,8 +10,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import LandingPage from "./LandingPage";
 
-import "../Home.css";
-
 const HomeContainer = styled.div`
   height: 100%;
 `;
@@ -127,7 +125,7 @@ export default class Home extends Component {
   //Renders NotesList component and NewNote component
   renderNotes() {
     return (
-      <div className="notes">
+      <>
         <NotesHeader>
           <Title>Notes</Title>
 
@@ -167,7 +165,7 @@ export default class Home extends Component {
             <FontAwesomeIcon icon={faSpinner} size="5x" spin />
           )}
         </NoteContainer>
-      </div>
+      </>
     );
   }
 
