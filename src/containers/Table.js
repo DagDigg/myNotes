@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import { LinkContainer } from "react-router-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,9 +7,16 @@ import { deleteTable } from "../API/tablesAPI";
 import { deleteNote } from "../API/notesAPI";
 import styled from "styled-components";
 import Title from "./Title";
+import PreviewNote from "./PreviewNote";
 
 const Table = ({ tableName, tableId, notes, removeTable }) => {
   const [title, setTitle] = useState(tableName);
+  const [tableNotes, setTableNotes] = useState(notes);
+
+  useEffect(() => {
+    setTableNotes(notes);
+    console.log("call");
+  }, [notes]);
 
   const TableContainer = styled.div`
     display: inline-block;
@@ -160,7 +167,6 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
    * @param {Boolean} isDragging Boolean value
    */
   const getItemStyle = isDragging => ({
-    //transform: `scale(${isDragging ? 1.1 : 1})`
     boxShadow: isDragging ? "0px 0px 5px -1px #0a0a0a" : "none"
   });
 
@@ -176,6 +182,13 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
     }
   };
 
+  const updateTableNotes = note => {
+    const newNotes = tableNotes ? [...tableNotes] : [];
+    console.log(newNotes);
+    console.log(note);
+    newNotes.push(note);
+    setTableNotes(newNotes);
+  };
   /**
    * Note Card render function
    * @param {Object} note Note Object
@@ -203,10 +216,10 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
             value={title}
             updateTitle={updateTitle}
             tableId={tableId}
-            notes={notes}
+            notes={tableNotes}
           ></Title>
 
-          <DeleteButton onClick={() => handleDelete(tableId, notes)}>
+          <DeleteButton onClick={() => handleDelete(tableId, tableNotes)}>
             <FontAwesomeIcon
               icon={faTimes}
               size="sm"
@@ -220,30 +233,55 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {notes &&
-                notes.map((note, index) => {
+              {tableNotes &&
+                tableNotes.map((note, index) => {
                   return (
                     <Draggable
                       key={note.noteId}
                       draggableId={note.noteId}
                       index={index}
                     >
-                      {(provided, snapshot) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          {renderNote(
-                            note,
-                            snapshot.isDragging,
-                            provided.draggableProps.style
-                          )}
-                        </div>
-                      )}
+                      {(provided, snapshot) => {
+                        return (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            {renderNote(
+                              note,
+                              snapshot.isDragging,
+                              provided.draggableProps.style
+                            )}
+                          </div>
+                        );
+                      }}
                     </Draggable>
                   );
                 })}
+
+              <Draggable
+                key={tableId + "preview"}
+                draggableId={tableId}
+                index={9999}
+                isDragDisabled={true}
+              >
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <PreviewNote
+                      tableId={tableId}
+                      tableName={tableName}
+                      notes={tableNotes}
+                      updateTableNotes={updateTableNotes}
+                    />
+                  </div>
+                )}
+              </Draggable>
+
               {provided.placeholder}
             </NotesContainer>
           )}
