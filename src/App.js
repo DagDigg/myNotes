@@ -101,6 +101,8 @@ class App extends Component {
       darkMode: false
     };
   }
+
+  // Load current session
   async componentDidMount() {
     try {
       await Auth.currentSession();
@@ -114,19 +116,26 @@ class App extends Component {
     this.setState({ isAuthenticating: false });
   }
 
+  /**
+   * Sets the state if authenticated or not
+   * @param {Boolean} authenticated Boolean value of authenticated
+   */
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated });
   };
 
+  // Logout handler
   handleLogout = async () => {
     await Auth.signOut();
     this.userHasAuthenticated(false);
     this.props.history.push("/login");
   };
 
+  // Toggle for light/dark mode
   toggleDarkMode = () => {
     this.setState({ darkMode: !this.state.darkMode });
   };
+
   render() {
     const childProps = {
       isAuthenticated: this.state.isAuthenticated,

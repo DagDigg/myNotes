@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { createNote, getNote } from "../API/notesAPI";
 import { updateTable } from "../API/tablesAPI";
+import { getTableNoteObj } from "../utils/tablesUtils";
 import styled from "styled-components";
+import * as COSTANTS from "../config";
 
 const NoteContainer = styled.div`
   height: auto;
@@ -43,10 +45,12 @@ const NoteText = styled.textarea`
 const PreviewNote = ({ tableId, tableName, notes, updateTableNotes }) => {
   const [noteContent, setNoteContent] = useState("");
 
+  // Note content should not be empty
   const validateContent = () => {
     return noteContent.length > 0;
   };
 
+  // Create note and add it to table
   const saveNote = async () => {
     if (!validateContent()) {
       return;
@@ -64,10 +68,14 @@ const PreviewNote = ({ tableId, tableName, notes, updateTableNotes }) => {
     await addNoteToTable(noteId);
   };
 
+  /**
+   * Updates the table with the new note merged
+   * @param {string} noteId ID of the note
+   */
   const addNoteToTable = async noteId => {
     const newNotes = notes ? [...notes] : [];
     const idx = newNotes.length;
-    const note = { noteId: noteId, noteIndex: idx };
+    const note = getTableNoteObj(noteId, idx);
     newNotes.push(note);
 
     updateTable(tableId, tableName, newNotes).then(() => {
@@ -75,20 +83,31 @@ const PreviewNote = ({ tableId, tableName, notes, updateTableNotes }) => {
     });
   };
 
+  /**
+   * Handler for text change
+   * @param {Object} e Event Object
+   */
   const handleTextChange = e => {
-    if (noteContent.length < 40) {
+    if (noteContent.length < COSTANTS.MAX_CONTENT_LENGTH) {
       setNoteContent(e.target.value);
     }
   };
 
+  // Handler for click outside
   const handleBlur = async () => {
     await saveNote();
   };
 
-  const onEnterPress = async e => {
+  /**
+   * Handler for enter key and backspace
+   * @param {Object} e Event Object
+   */
+  const onKeyPress = async e => {
     if (e.keyCode === 13 && e.shiftKey === false) {
       e.preventDefault();
       await saveNote();
+    } else if (e.keyCode === 8 && noteContent.length > 0) {
+      setNoteContent(noteContent.substring(0, noteContent.length - 1));
     }
   };
 
@@ -101,7 +120,7 @@ const PreviewNote = ({ tableId, tableName, notes, updateTableNotes }) => {
             placeholder="Enter note content..."
             value={noteContent}
             onChange={handleTextChange}
-            onKeyDown={onEnterPress}
+            onKeyDown={onKeyPress}
             onBlur={handleBlur}
           ></NoteText>
         </TextContainer>

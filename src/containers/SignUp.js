@@ -4,6 +4,7 @@ import LoaderButton from "../components/LoaderButton";
 import { AuthContainer, Label } from "../components/StyledAuthentication";
 import { Auth } from "aws-amplify";
 import { postInitialTable } from "../API/tablesAPI";
+import * as COSTANTS from "../config";
 
 export default class SignUp extends Component {
   constructor(props) {
@@ -31,7 +32,10 @@ export default class SignUp extends Component {
     let confirmPassword = this.state.confirmPassword;
 
     window.clearTimeout(this.timeout);
-    this.setState({ isValidPassword: true, isValidConfirmPassword: true });
+    this.setState({
+      isValidPassword: true,
+      isValidConfirmPassword: true
+    });
 
     id === "password"
       ? (this.timeout = window.setTimeout(() => {
@@ -49,7 +53,7 @@ export default class SignUp extends Component {
   validateForm() {
     return (
       this.state.email.length > 0 &&
-      this.state.password.length >= 8 &&
+      this.state.password.length >= COSTANTS.MIN_PASSWORD_LENGTH &&
       this.state.password === this.state.confirmPassword
     );
   }
@@ -58,6 +62,10 @@ export default class SignUp extends Component {
     return this.state.confirmationCode.length > 0;
   }
 
+  /**
+   * Handler for inputs. Sets the corrisponding id state to value
+   * @param {Object} e Event Object
+   */
   handleChange = e => {
     this.setState({
       [e.target.id]: e.target.value

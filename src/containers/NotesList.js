@@ -74,6 +74,7 @@ class NotesList extends Component {
     };
   }
 
+  // Reorder notes by index
   componentDidMount() {
     const orderedNotes = reorderNotes(this.state.notes, this.state.tables);
     this.setState({ notes: orderedNotes });
@@ -119,16 +120,30 @@ class NotesList extends Component {
     this.setState({ tables: newTables });
   };
 
+  /**
+   * Function fired on drag end
+   * @param {Object} result Result object
+   */
   onDragEnd = async result => {
-    //Dropped out of the list
-    if (!result.destination) {
-      return;
-    }
-
     const { source, destination } = result;
     const { notes } = this.state;
     const sourceTableId = source.droppableId;
     const destinationTableId = destination.droppableId;
+
+    const destinationNotesLength = notes[destinationTableId]
+      ? notes[destinationTableId].length
+      : 1;
+
+    console.log(source);
+    console.log(destination);
+    //Dropped out of the list or swap with Preview
+    if (
+      !destination ||
+      (destination.index === destinationNotesLength &&
+        sourceTableId === destinationTableId)
+    ) {
+      return;
+    }
 
     //If the swap occurs on the same table
     if (

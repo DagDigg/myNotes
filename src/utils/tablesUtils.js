@@ -23,3 +23,15 @@ export const getTableIds = tables => {
   });
   return result;
 };
+
+/**
+ * Gets note object for table format
+ * @param {string} noteId ID of the note
+ * @param {Number} index Index of the note
+ *
+ * @return {Object} Note Object to be added to the table
+ */
+export const getTableNoteObj = (noteId, index) => ({
+  noteId: noteId,
+  noteIndex: index
+});

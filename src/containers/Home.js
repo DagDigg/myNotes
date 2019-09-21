@@ -95,10 +95,13 @@ export default class Home extends Component {
       return;
     }
     try {
+      //Get notes, tables and tableIDs
       const rawNotes = await getNotes();
       const tables = await listTables();
       const tableIds = getTableIds(tables);
+      //Group notes by table
       const notes = getGroupedNotes(tableIds, rawNotes);
+      //Set state with grouped notes and total tables
       this.setState({ notes, tables });
     } catch (e) {
       alert(e);
@@ -106,12 +109,11 @@ export default class Home extends Component {
     this.setState({ isLoading: false });
   }
 
-  //Trims note text if it's too long
-  noteHeader(content) {
-    return content.length > 70 ? content.substring(0, 84) + " ..." : content;
-  }
-
-  //Renders NotesList.js Component. Called inside renderNotes()
+  /**
+   * Renders NotesList Component. Called inside renderNotes()
+   * @param {Object} notes Total notes
+   * @param {Object} tables Total tables
+   */
   renderNotesList(notes, tables) {
     return (
       <NotesList
@@ -158,6 +160,7 @@ export default class Home extends Component {
           </LinkContainer>
         </NotesHeader>
 
+        {/*Notes List*/}
         <NoteContainer>
           {!this.state.isLoading ? (
             this.renderNotesList(this.state.notes, this.state.tables)

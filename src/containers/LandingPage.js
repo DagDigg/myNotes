@@ -26,13 +26,17 @@ const LandingPage = () => {
     position: absolute;
   `;
 
-  const getIllustrationStyle = () => {
-    return {
-      position: "absolute",
-      left: "200px",
-      top: "150px"
-    };
-  };
+  /**
+   * Gets styling for NotesIllustration
+   *
+   * @return {Object} Styles Object
+   */
+  const getIllustrationStyle = () => ({
+    position: "absolute",
+    left: "200px",
+    top: "150px"
+  });
+
   return (
     <Container>
       <Title>Notes. Made. Easy.</Title>

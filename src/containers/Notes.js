@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { API, Storage } from "aws-amplify";
+import { Storage } from "aws-amplify";
 import config from "../config";
 import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
 import { getTable, updateTable } from "../API/tablesAPI";
-import { deleteNote, saveNote } from "../API/notesAPI";
+import { deleteNote, saveNote, getNote } from "../API/notesAPI";
 import styled from "styled-components";
 import {
   Group,
@@ -40,10 +40,11 @@ export default class Notes extends Component {
     };
   }
 
+  // Destructuring note Object and setting state
   async componentDidMount() {
     try {
       let attachmentURL = null;
-      const note = await this.getNote();
+      const note = await getNote(this.props.match.params.id);
 
       const { content, attachment, noteIndex, noteTable } = note;
 
@@ -51,20 +52,27 @@ export default class Notes extends Component {
         attachmentURL = await Storage.vault.get(attachment);
       }
 
-      this.setState({ note, content, attachmentURL, noteIndex, noteTable });
+      this.setState({
+        note,
+        content,
+        attachmentURL,
+        noteIndex,
+        noteTable
+      });
     } catch (e) {
       alert(e);
     }
   }
 
-  getNote() {
-    return API.get("notes", `/notes/${this.props.match.params.id}`);
-  }
-
+  /**
+   * Removes attachment from s3
+   * @param {string} attachment Attachment to remove
+   */
   async removeAttachment(attachment) {
     return Storage.vault.remove(attachment);
   }
 
+  // Removes note from table and updates it. Called on handleDelete
   async removeNoteFromTable() {
     const noteId = this.state.note.noteId;
     const tableId = this.state.note.noteTable;
@@ -77,26 +85,40 @@ export default class Notes extends Component {
     return await updateTable(tableId, tableName, newTableNotes);
   }
 
+  // Form validation
   validateForm() {
     return this.state.content.length > 0;
   }
 
+  // RegEx to format file name
   formatFileName(str) {
     return str.replace(/^w+-/, "");
   }
 
+  /**
+   * Handler for inputs. Sets the corrisponding id state to value
+   * @param {Object} e Event Object
+   */
   handleChange = e => {
     this.setState({
       [e.target.id]: e.target.value
     });
   };
 
+  /**
+   * Handler for file change. Sets file and fileName
+   * @param {Object} e Event Object
+   */
   handleFileChange = e => {
     this.file = e.target.files[0];
     const fileName = e.target.files[0].name;
     this.setState({ fileName });
   };
 
+  /**
+   * Submit form handler. Saves the note and updates attachment if a new one is provided
+   * @param {Object} e Event Object
+   */
   handleSubmit = async e => {
     e.preventDefault();
     let attachment;
@@ -132,6 +154,10 @@ export default class Notes extends Component {
     }
   };
 
+  /**
+   * Handler for delete button. Removes attachment if present, note and note from table
+   * @param {Object} e Event Object
+   */
   handleDelete = async e => {
     e.preventDefault();
 

@@ -32,6 +32,13 @@ export const getGroupedNotes = (tables, notes) => {
   return groupedNotes;
 };
 
+/**
+ * Reorder notes based on table.notes
+ * @param {Object} notes Notes Object
+ * @param {Array} tables Array of tables
+ *
+ * @return {Object} New ordered notes Object
+ */
 export const reorderNotes = (notes, tables) => {
   const orderedNotes = {};
 

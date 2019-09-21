@@ -17,16 +17,29 @@ export default class Login extends Component {
     };
   }
 
+  /**
+   * Form validator. Returns true if email is > 0 and password > 8
+   *
+   * @return {Boolean}
+   */
   validateForm = () => {
     return this.state.email.length > 0 && this.state.password.length >= 8;
   };
 
+  /**
+   * Handler for inputs. Sets the corrisponding id state to value
+   * @param {Object} e Event Object
+   */
   handleChange = e => {
     this.setState({
       [e.target.id]: e.target.value
     });
   };
 
+  /**
+   * Submit handler. Signs in user with email and password
+   * @param {Object} e Event Object
+   */
   handleSubmit = async e => {
     e.preventDefault();
 
@@ -35,8 +48,11 @@ export default class Login extends Component {
       await Auth.signIn(this.state.email, this.state.password);
       this.props.userHasAuthenticated(true);
     } catch (e) {
-      console.log(e);
-      this.setState({ isLoading: false, errDescription: e.message });
+      alert(e);
+      this.setState({
+        isLoading: false,
+        errDescription: e.message
+      });
     }
   };
 
@@ -47,7 +63,9 @@ export default class Login extends Component {
           <Redirect
             to={{
               pathname: "/err",
-              state: { errDescription: this.state.errDescription }
+              state: {
+                errDescription: this.state.errDescription
+              }
             }}
           />
         ) : (

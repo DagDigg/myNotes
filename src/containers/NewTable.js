@@ -12,14 +12,28 @@ const NewTable = ({ history }) => {
   `;
   const [tableName, setTableName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  /**
+   * Form validation
+   *
+   * @return {Boolean} Boolean value
+   */
   const validateForm = () => {
     return tableName.length > 0;
   };
 
+  /**
+   * Handler for table name. Sets state with the name
+   * @param {Object} e Event Object
+   */
   const handleChange = e => {
     setTableName(e.target.value);
   };
 
+  /**
+   * Handler for submit form. Creates a table.
+   * @param {Object} e Event Object
+   */
   const handleSubmit = async e => {
     e.preventDefault();
     setIsLoading(true);

@@ -8,6 +8,7 @@ import { deleteNote } from "../API/notesAPI";
 import styled from "styled-components";
 import Title from "./Title";
 import PreviewNote from "./PreviewNote";
+import * as COSTANTS from "../config";
 
 const Table = ({ tableName, tableId, notes, removeTable }) => {
   const [title, setTitle] = useState(tableName);
@@ -175,20 +176,23 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
    * @param {string} text Note content
    */
   const formatText = text => {
-    if (text.length > 40) {
+    if (text.length > COSTANTS.MAX_CONTENT_LENGTH) {
       return text.substring(0, 40);
     } else {
       return text;
     }
   };
 
+  /**
+   * Merge the new note to the previous and update table
+   * @param {Object} note Note Object
+   */
   const updateTableNotes = note => {
     const newNotes = tableNotes ? [...tableNotes] : [];
-    console.log(newNotes);
-    console.log(note);
     newNotes.push(note);
     setTableNotes(newNotes);
   };
+
   /**
    * Note Card render function
    * @param {Object} note Note Object
@@ -261,8 +265,8 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
                 })}
 
               <Draggable
-                key={tableId + "preview"}
-                draggableId={tableId}
+                key={`${tableId}-preview`}
+                draggableId={`${tableId}-preview`}
                 index={9999}
                 isDragDisabled={true}
               >

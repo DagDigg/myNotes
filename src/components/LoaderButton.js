@@ -47,6 +47,7 @@ export default ({
       letter-spacing: 1px;
     }
   `;
+
   return (
     <Button disabled={disabled || isLoading} {...props}>
       <div>

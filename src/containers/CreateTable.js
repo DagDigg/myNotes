@@ -28,11 +28,16 @@ const CreateTable = ({ addTable }) => {
     }
   `;
 
+  /**
+   * Click handler. Creates a new Table with default title: "Table"
+   * @param {Object} e Event Object
+   */
   const handleClick = async e => {
     e.preventDefault();
     const table = await createTable("Table");
     addTable(table);
   };
+
   return (
     <NewTableBtn onClick={handleClick}>
       <span>
