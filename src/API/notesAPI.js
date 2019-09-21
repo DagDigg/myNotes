@@ -1,7 +1,38 @@
 import { API } from "aws-amplify";
 
+/**
+ * Creates a note
+ * @param {Object} note Note content
+ */
+export const createNote = note => {
+  return API.post("notes", "/notes", {
+    body: note
+  });
+};
+
+/**
+ * Gets total notes
+ *
+ * @return {Promise} Promise response
+ */
 export const getNotes = async () => {
   return await API.get("notes", "/notes");
+};
+
+/**
+ * Gets a single note
+ * @param {string} noteId ID of the note
+ *
+ * @return {Promise} Promise response
+ */
+export const getNote = async noteId => {
+  let result;
+  try {
+    result = API.get("notes", `/notes/${noteId}`);
+  } catch (e) {
+    alert(e);
+  }
+  return await result;
 };
 
 /**
