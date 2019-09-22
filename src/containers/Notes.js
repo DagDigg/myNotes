@@ -147,7 +147,7 @@ export default class Notes extends Component {
 
       await saveNote(body, this.props.match.params.id);
 
-      this.props.history.push("/myNotes");
+      this.props.history.push("/");
     } catch (e) {
       alert(e);
       this.setState({ isLoading: false });
@@ -175,7 +175,7 @@ export default class Notes extends Component {
       }
       await this.removeNoteFromTable();
       await deleteNote(this.props.match.params.id);
-      this.props.history.push("/myNotes");
+      this.props.history.push("/");
     } catch (e) {
       alert(e);
       this.setState({ isDeleting: false });

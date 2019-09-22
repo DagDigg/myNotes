@@ -128,7 +128,7 @@ class App extends Component {
   handleLogout = async () => {
     await Auth.signOut();
     this.userHasAuthenticated(false);
-    this.props.history.push("/myNotes/login");
+    this.props.history.push("/login");
   };
 
   // Toggle for light/dark mode
@@ -149,7 +149,7 @@ class App extends Component {
             <AppContainer>
               <Navbar fluid="true" collapseOnSelect className="nav">
                 <Navbar.Brand>
-                  <Link to="/myNotes" className="logo">
+                  <Link to="/" className="logo">
                     <Logo>myNotes</Logo>
                   </Link>
                 </Navbar.Brand>
@@ -166,12 +166,12 @@ class App extends Component {
                       </Nav.Link>
                     ) : (
                       <Fragment>
-                        <LinkContainer to="/myNotes/login">
+                        <LinkContainer to="/login">
                           <Nav.Link>
                             <AuthenticationBtn>Login</AuthenticationBtn>
                           </Nav.Link>
                         </LinkContainer>
-                        <LinkContainer to="/myNotes/signup">
+                        <LinkContainer to="/signup">
                           <Nav.Link>
                             <AuthenticationBtn>Sign up</AuthenticationBtn>
                           </Nav.Link>

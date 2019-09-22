@@ -115,7 +115,7 @@ export default class SignUp extends Component {
       await postInitialTable();
 
       this.props.userHasAuthenticated(true);
-      this.props.history.push("/myNotes");
+      this.props.history.push("/");
     } catch (e) {
       alert(e.message);
       this.setState({ isLoading: false });

@@ -14,33 +14,33 @@ import Error from "./components/Error";
 
 export default ({ childProps }) => (
   <Switch>
-    <AppliedRoute path="/myNotes" exact component={Home} props={childProps} />
+    <AppliedRoute path="" exact component={Home} props={childProps} />
     <UnAuthenticatedRoute
-      path="/myNotes/login"
+      path="/login"
       exact
       component={Login}
       props={childProps}
     />
     <UnAuthenticatedRoute
-      path="/myNotes/signup"
+      path="/signup"
       exact
       component={SignUp}
       props={childProps}
     />
     <AuthenticatedRoute
-      path="/myNotes/notes/new"
+      path="/notes/new"
       exact
       component={NewNote}
       props={childProps}
     />
     <AuthenticatedRoute
-      path="/myNotes/tables/new"
+      path="/tables/new"
       exact
       component={NewTable}
       props={childProps}
     />
     <AuthenticatedRoute
-      path="/myNotes/notes/:id"
+      path="/notes/:id"
       exact
       component={Notes}
       props={childProps}
