@@ -32,7 +32,7 @@ Amplify.configure({
 });
 
 ReactDOM.render(
-  <Router basename="/">
+  <Router basename="/myNotes">
     {" "}
     <App />{" "}
   </Router>,
