@@ -14,7 +14,7 @@ import Error from "./components/Error";
 
 export default ({ childProps }) => (
   <Switch>
-    <AppliedRoute path="" exact component={Home} props={childProps} />
+    <AppliedRoute path="/" exact component={Home} props={childProps} />
     <UnAuthenticatedRoute
       path="/login"
       exact
