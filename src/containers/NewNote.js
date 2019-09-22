@@ -46,7 +46,7 @@ export default class NewNote extends Component {
     //Redirect if there are no tables
     if (!tables.length) {
       window.alert("You must have at least a table before creating a note");
-      this.props.history.push("/");
+      this.props.history.push("/myNotes");
       return;
     }
 
@@ -114,7 +114,7 @@ export default class NewNote extends Component {
 
       await this.addNoteToTable(noteId);
 
-      this.props.history.push("/");
+      this.props.history.push("/myNotes");
     } catch (e) {
       console.log(e);
       this.setState({ isLoading: false });

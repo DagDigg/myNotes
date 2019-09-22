@@ -39,7 +39,7 @@ const NewTable = ({ history }) => {
     setIsLoading(true);
     try {
       await createTable(tableName);
-      history.push("/");
+      history.push("/myNotes");
     } catch (e) {
       setIsLoading(false);
       alert(e);

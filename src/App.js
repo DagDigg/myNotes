@@ -128,7 +128,7 @@ class App extends Component {
   handleLogout = async () => {
     await Auth.signOut();
     this.userHasAuthenticated(false);
-    this.props.history.push("/login");
+    this.props.history.push("/myNotes/login");
   };
 
   // Toggle for light/dark mode
