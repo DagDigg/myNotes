@@ -200,7 +200,10 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
    */
   const renderNote = (note, isDragging) => (
     <NoteContainer>
-      <NoteLink to={`/notes/${note.noteId}`} style={getItemStyle(isDragging)}>
+      <NoteLink
+        to={`/myNotes/notes/${note.noteId}`}
+        style={getItemStyle(isDragging)}
+      >
         <NoteCard>
           <TextContainer>
             <NoteText>{formatText(note.content)}</NoteText>

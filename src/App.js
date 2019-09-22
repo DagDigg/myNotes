@@ -149,7 +149,7 @@ class App extends Component {
             <AppContainer>
               <Navbar fluid="true" collapseOnSelect className="nav">
                 <Navbar.Brand>
-                  <Link to="/" className="logo">
+                  <Link to="/myNotes" className="logo">
                     <Logo>myNotes</Logo>
                   </Link>
                 </Navbar.Brand>
@@ -166,12 +166,12 @@ class App extends Component {
                       </Nav.Link>
                     ) : (
                       <Fragment>
-                        <LinkContainer to="/login">
+                        <LinkContainer to="/myNotes/login">
                           <Nav.Link>
                             <AuthenticationBtn>Login</AuthenticationBtn>
                           </Nav.Link>
                         </LinkContainer>
-                        <LinkContainer to="/signup">
+                        <LinkContainer to="/myNotes/signup">
                           <Nav.Link>
                             <AuthenticationBtn>Sign up</AuthenticationBtn>
                           </Nav.Link>
