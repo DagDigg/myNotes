@@ -50,6 +50,7 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   const sourceClone = Array.from(source);
   const destinationClone = destination ? Array.from(destination) : [];
   const [removed] = sourceClone.splice(droppableSource.index, 1);
+  console.log(removed);
   removed.noteTable = droppableDestination.droppableId;
 
   destinationClone.splice(droppableDestination.index, 0, removed);
@@ -108,6 +109,15 @@ class NotesList extends Component {
     return await updateTable(tableId, tableName, newNotes);
   };
 
+  /**
+   * Merge the new note to the previous and update table
+   * @param {Object} note Note Object
+   */
+  updateTableNotes = note => {
+    const notes = this.state.notes;
+    notes[note.noteTable].push(note);
+    this.setState(notes);
+  };
   /**
    * Removes a table from state tables
    * @param {string} tableId ID of the table
@@ -197,6 +207,7 @@ class NotesList extends Component {
                   notes={getNotesByTable(this.state.notes, table.tableId)}
                   key={table.tableId}
                   removeTable={this.removeTable}
+                  updateTableNotes={this.updateTableNotes}
                 />
               ))}
               <CreateContainer>

@@ -10,7 +10,13 @@ import Title from "./Title";
 import PreviewNote from "./PreviewNote";
 import * as COSTANTS from "../config";
 
-const Table = ({ tableName, tableId, notes, removeTable }) => {
+const Table = ({
+  tableName,
+  tableId,
+  notes,
+  removeTable,
+  updateTableNotes
+}) => {
   const [title, setTitle] = useState(tableName);
   const [tableNotes, setTableNotes] = useState(notes);
 
@@ -181,16 +187,6 @@ const Table = ({ tableName, tableId, notes, removeTable }) => {
     } else {
       return text;
     }
-  };
-
-  /**
-   * Merge the new note to the previous and update table
-   * @param {Object} note Note Object
-   */
-  const updateTableNotes = note => {
-    const newNotes = tableNotes ? [...tableNotes] : [];
-    newNotes.push(note);
-    setTableNotes(newNotes);
   };
 
   /**
