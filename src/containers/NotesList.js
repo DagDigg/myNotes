@@ -114,6 +114,11 @@ class NotesList extends Component {
    */
   updateTableNotes = note => {
     const notes = this.state.notes;
+    // If the table has no notes, create the object
+    if (!notes[note.noteTable]) {
+      console.log("enter");
+      notes[note.noteTable] = [];
+    }
     notes[note.noteTable].push(note);
     this.setState(notes);
   };
