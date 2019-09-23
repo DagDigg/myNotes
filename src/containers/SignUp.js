@@ -160,6 +160,7 @@ export default class SignUp extends Component {
             <FormControl
               autoFocus
               type="email"
+              key="email"
               value={this.state.email}
               onChange={this.handleChange}
             />
@@ -168,6 +169,7 @@ export default class SignUp extends Component {
             <Label>Password:</Label>
             <FormControl
               type="password"
+              key="password"
               value={this.state.password}
               onChange={this.handlePasswordChange}
             />
@@ -183,6 +185,7 @@ export default class SignUp extends Component {
             <Label>Confirm password:</Label>
             <FormControl
               type="password"
+              key="confirmPassword"
               value={this.state.confirmPassword}
               onChange={this.handlePasswordChange}
             />
