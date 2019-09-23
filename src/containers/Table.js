@@ -155,7 +155,7 @@ const Table = ({
     if (!confirmed) {
       return;
     }
-    console.log(tableId);
+
     await deleteTable(tableId);
     asyncForEach(notes, async note => {
       await deleteNote(note.noteId);

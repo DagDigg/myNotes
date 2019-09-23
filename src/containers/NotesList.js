@@ -50,7 +50,6 @@ const move = (source, destination, droppableSource, droppableDestination) => {
   const sourceClone = Array.from(source);
   const destinationClone = destination ? Array.from(destination) : [];
   const [removed] = sourceClone.splice(droppableSource.index, 1);
-  console.log(removed);
   removed.noteTable = droppableDestination.droppableId;
 
   destinationClone.splice(droppableDestination.index, 0, removed);
@@ -144,8 +143,6 @@ class NotesList extends Component {
       ? notes[destinationTableId].length
       : 1;
 
-    console.log(source);
-    console.log(destination);
     //Dropped out of the list or swap with Preview
     if (
       !destination ||

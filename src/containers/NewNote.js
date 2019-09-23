@@ -116,7 +116,7 @@ export default class NewNote extends Component {
 
       this.props.history.push("/");
     } catch (e) {
-      console.log(e);
+      alert(e);
       this.setState({ isLoading: false });
     }
   };
