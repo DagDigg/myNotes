@@ -4,6 +4,7 @@ import LoaderButton from "../components/LoaderButton";
 import { Auth } from "aws-amplify";
 import { Redirect } from "react-router-dom";
 import { AuthContainer, Label } from "../components/StyledAuthentication";
+import * as COSTANTS from "../config";
 
 export default class Login extends Component {
   constructor(props) {
@@ -23,7 +24,10 @@ export default class Login extends Component {
    * @return {Boolean}
    */
   validateForm = () => {
-    return this.state.email.length > 0 && this.state.password.length >= 8;
+    return (
+      this.state.email.length > 0 &&
+      this.state.password.length >= COSTANTS.MIN_PASSWORD_LENGTH
+    );
   };
 
   /**
@@ -73,7 +77,6 @@ export default class Login extends Component {
             <FormGroup controlId="email">
               <Label>Email</Label>
               <FormControl
-                autoFocus
                 type="email"
                 key="email"
                 placeholder="Enter email"
