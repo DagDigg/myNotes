@@ -18,12 +18,6 @@ const Table = ({
   updateTableNotes
 }) => {
   const [title, setTitle] = useState(tableName);
-  const [tableNotes, setTableNotes] = useState(notes);
-
-  useEffect(() => {
-    setTableNotes(notes);
-    console.log("call");
-  }, [notes]);
 
   const TableContainer = styled.div`
     display: inline-block;
@@ -216,10 +210,10 @@ const Table = ({
             value={title}
             updateTitle={updateTitle}
             tableId={tableId}
-            notes={tableNotes}
+            notes={notes}
           ></Title>
 
-          <DeleteButton onClick={() => handleDelete(tableId, tableNotes)}>
+          <DeleteButton onClick={() => handleDelete(tableId, notes)}>
             <FontAwesomeIcon
               icon={faTimes}
               size="sm"
@@ -233,8 +227,8 @@ const Table = ({
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
-              {tableNotes &&
-                tableNotes.map((note, index) => {
+              {notes &&
+                notes.map((note, index) => {
                   return (
                     <Draggable
                       key={note.noteId}
@@ -275,7 +269,7 @@ const Table = ({
                     <PreviewNote
                       tableId={tableId}
                       tableName={tableName}
-                      notes={tableNotes}
+                      notes={notes}
                       updateTableNotes={updateTableNotes}
                     />
                   </div>
