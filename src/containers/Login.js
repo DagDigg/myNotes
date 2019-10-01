@@ -60,6 +60,40 @@ export default class Login extends Component {
     }
   };
 
+  // Form Render
+  renderForm = () => (
+    <form onSubmit={this.handleSubmit}>
+      <FormGroup controlId="email">
+        <Label>Email</Label>
+        <FormControl
+          type="email"
+          key="email"
+          placeholder="Enter email"
+          value={this.state.email}
+          onChange={this.handleChange}
+        />
+      </FormGroup>
+      <FormGroup controlId="password">
+        <Label>Password</Label>
+        <FormControl
+          type="password"
+          key="password"
+          placeholder="Enter password"
+          value={this.state.password}
+          onChange={this.handleChange}
+        />
+      </FormGroup>
+      <LoaderButton
+        block
+        disabled={!this.validateForm()}
+        type="submit"
+        isLoading={this.state.isLoading}
+        text="Login"
+        loadingText="Logging in..."
+      />
+    </form>
+  );
+
   render() {
     return (
       <AuthContainer>
@@ -73,36 +107,7 @@ export default class Login extends Component {
             }}
           />
         ) : (
-          <form onSubmit={this.handleSubmit}>
-            <FormGroup controlId="email">
-              <Label>Email</Label>
-              <FormControl
-                type="email"
-                key="email"
-                placeholder="Enter email"
-                value={this.state.email}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-            <FormGroup controlId="password">
-              <Label>Password</Label>
-              <FormControl
-                type="password"
-                key="password"
-                placeholder="Enter password"
-                value={this.state.password}
-                onChange={this.handleChange}
-              />
-            </FormGroup>
-            <LoaderButton
-              block
-              disabled={!this.validateForm()}
-              type="submit"
-              isLoading={this.state.isLoading}
-              text="Login"
-              loadingText="Logging in..."
-            />
-          </form>
+          this.renderForm()
         )}
       </AuthContainer>
     );
