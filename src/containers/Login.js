@@ -65,9 +65,10 @@ export default class Login extends Component {
     <form onSubmit={this.handleSubmit}>
       <FormGroup controlId="email">
         <Label>Email</Label>
-        <FormControl
+        <input
           type="email"
           key="email"
+          id="email"
           placeholder="Enter email"
           value={this.state.email}
           onChange={this.handleChange}
@@ -75,9 +76,10 @@ export default class Login extends Component {
       </FormGroup>
       <FormGroup controlId="password">
         <Label>Password</Label>
-        <FormControl
+        <input
           type="password"
           key="password"
+          id="password"
           placeholder="Enter password"
           value={this.state.password}
           onChange={this.handleChange}
