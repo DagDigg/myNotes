@@ -14,8 +14,7 @@ export default class Login extends Component {
       isLoading: false,
       email: "",
       password: "",
-      errDescription: "",
-      passwordFocus: false
+      errDescription: ""
     };
   }
 
@@ -36,18 +35,7 @@ export default class Login extends Component {
    * @param {Object} e Event Object
    */
   handleChange = e => {
-    const { passwordFocus } = this.state;
-    if (
-      (e.target.id === "email" && passwordFocus) ||
-      (e.target.id === "password" && !passwordFocus)
-    ) {
-      this.setState({
-        [e.target.id]: e.target.value,
-        passwordFocus: !passwordFocus
-      });
-    } else {
-      this.setState({ [e.target.id]: e.target.value });
-    }
+    this.setState({ [e.target.id]: e.target.value });
   };
 
   /**
@@ -78,6 +66,7 @@ export default class Login extends Component {
         <FormControl
           type="email"
           key="email"
+          autoComplete="off"
           placeholder="Enter email"
           value={this.state.email}
           onChange={this.handleChange}
@@ -88,7 +77,7 @@ export default class Login extends Component {
         <FormControl
           type="password"
           key="password"
-          autoFocus={this.state.passwordFocus}
+          autoComplete="off"
           placeholder="Enter password"
           value={this.state.password}
           onChange={this.handleChange}
